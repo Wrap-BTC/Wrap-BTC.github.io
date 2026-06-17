@@ -1,0 +1,107 @@
+{
+ "keyword": "wrap btc",
+ "h1": "Wrap BTC",
+ "brand": "WBTC",
+ "niche": "token",
+ "verb": "Wrap",
+ "title": "Wrap BTC - Open App",
+ "meta_description": "wrap btc through the official WBTC destination; verify the Ethereum token contract, review the route, and open the app securely.",
+ "palette": {
+  "mode": "dark",
+  "bg": "#0B0B0F",
+  "accent": "#F7931A",
+  "ink": "#FFFFFF"
+ },
+ "hero_h2": "Bring Bitcoin liquidity onto Ethereum as WBTC",
+ "hero_lead": "wrap btc through the official WBTC Network route to bring Bitcoin liquidity into Ethereum DeFi while checking the token contract, network, and redemption path first.",
+ "badge": "ERC-20",
+ "widget": {
+  "from": "BTC",
+  "from_net": "Bitcoin",
+  "to": "WBTC",
+  "to_net": "Ethereum",
+  "action": "Open WBTC App"
+ },
+ "trust": [
+  "Official WBTC Network",
+  "Ethereum ERC-20",
+  "Public Etherscan contract"
+ ],
+ "what_is": "WBTC is Wrapped Bitcoin, an ERC-20 token that represents Bitcoin on Ethereum; its public token page is available on <a href=\"https://etherscan.io/token/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599\">Etherscan</a>. Use the official WBTC Network destination to confirm current mint, redemption, merchant, and custody information before moving funds.",
+ "how": [
+  {
+   "t": "Open the official destination",
+   "d": "Use the app button to go to wbtc.network, then confirm the domain before connecting a wallet or following any merchant route."
+  },
+  {
+   "t": "Choose the route",
+   "d": "Check whether you need minting, redemption, or receiving existing WBTC; availability can depend on supported providers and jurisdiction."
+  },
+  {
+   "t": "Verify the asset",
+   "d": "Confirm WBTC on Ethereum and match the token contract before receiving, swapping, or approving anything."
+  },
+  {
+   "t": "Complete and monitor",
+   "d": "Follow the official flow, review every wallet prompt, and track the Bitcoin and Ethereum-side confirmations where applicable."
+  }
+ ],
+ "points": [
+  {
+   "h": "BTC utility on Ethereum",
+   "p": "WBTC is designed so Bitcoin liquidity can interact with Ethereum applications that support ERC-20 tokens."
+  },
+  {
+   "h": "Contract visibility",
+   "p": "The WBTC token contract is publicly viewable on <a href=\"https://etherscan.io/token/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599\">Etherscan</a>, which helps users verify the asset before interacting."
+  },
+  {
+   "h": "Official route first",
+   "p": "Start from <a href=\"https://wbtc.network/\">WBTC Network</a> and verify the domain, route, and redemption path before sending funds."
+  }
+ ],
+ "eeat": [
+  {
+   "text": "WBTC Network",
+   "url": "https://wbtc.network/"
+  },
+  {
+   "text": "WBTC on Etherscan",
+   "url": "https://etherscan.io/token/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
+  },
+  {
+   "text": "Ethereum ERC-20 standard",
+   "url": "https://ethereum.org/developers/docs/standards/tokens/erc-20/"
+  }
+ ],
+ "faq": [
+  {
+   "q": "What does wrap btc mean?",
+   "a": "It means moving from native BTC exposure into a tokenized representation such as WBTC for use in Ethereum applications.",
+   "open": true
+  },
+  {
+   "q": "Can I wrap btc directly from this page?",
+   "a": "No. This page routes users to the official WBTC Network destination; verify <a href=\"https://wbtc.network/\">wbtc.network</a> before connecting a wallet or sending funds.",
+   "open": false
+  },
+  {
+   "q": "Which token do I receive when I wrap btc?",
+   "a": "The common Ethereum destination is WBTC, an ERC-20 token; confirm the contract on <a href=\"https://etherscan.io/token/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599\">Etherscan</a> before interacting.",
+   "open": false
+  },
+  {
+   "q": "Is wrap btc the same as swapping BTC?",
+   "a": "No. Wrapping creates or uses a tokenized BTC representation on another network, while swapping exchanges one asset for another through a market or liquidity route.",
+   "open": false
+  },
+  {
+   "q": "What should I check before I wrap btc?",
+   "a": "Confirm the official domain, token contract, receiving network, wallet prompts, service fees shown in the selected route, and the available redemption path.",
+   "open": false
+  }
+ ],
+ "official_url": "https://wbtc.network/",
+ "official_domain": "wbtc.network",
+ "footer_note": "Not the official app; verify wbtc.network before connecting, and use this page for education only, not financial advice."
+}

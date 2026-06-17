@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wrap-btc.github.io/sitemap.xml
