@@ -1,0 +1,58 @@
+# Wrap BTC
+> An independent, non-custodial dashboard explaining how native Bitcoin is represented and used as wrapped BTC tokens on programmable blockchains.
+
+## What is Wrap BTC
+Wrapping BTC creates a token on another blockchain that represents Bitcoin held or controlled elsewhere. The best-known implementation, Wrapped Bitcoin (WBTC), targets a 1:1 backing ratio and lets BTC value interact with smart contracts, wallets, exchanges, lending markets, and liquidity pools. WBTC is not native BTC and does not inherit Bitcoin’s custody or consensus model. Alternatives such as cbBTC and tBTC provide similar utility but use different issuers, custody arrangements, security assumptions, and network coverage.
+
+## How it works
+1. A retail user normally obtains existing WBTC through an exchange or swap rather than minting it directly.
+2. For new issuance, an approved merchant completes KYC/AML checks and sends BTC to a designated custodian wallet.
+3. After six Bitcoin confirmations, the custodian verifies the deposit, mints matching WBTC, and transfers it through the merchant.
+4. For redemption, a merchant burns WBTC; after the required destination-chain confirmations, the custodian releases BTC.
+5. The user can self-custody WBTC afterward, while the backing BTC remains under institutional custody.
+
+## Key facts
+- BTC is native to Bitcoin; WBTC is a separate token with different operational and counterparty risks.
+- Ethereum WBTC is an ERC-20 token on chain ID 1 with eight decimals.
+- Its Ethereum contract is `0x2260fac5e5542a773aa44fbcfedf7c193bc2c599`.
+- Official native deployments include Ethereum, Solana, TRON, BNB Chain, Base, Kava, and Osmosis.
+- Each network has a distinct official contract or mint address; identical symbols do not prove authenticity.
+- WBTC reserves use institutional custody involving BitGo and BiT Global.
+- Authorized merchants initiate minting and burning; ordinary holders can transfer WBTC without becoming merchants.
+- Reserve addresses, circulating issuance, and mint/burn records are publicly inspectable.
+- Direct Ethereum redemption requires 25 Ethereum confirmations before BTC release; provider processing adds time.
+- This dashboard is informational and non-custodial: it does not hold BTC, WBTC, wallet keys, or seed phrases.
+
+## Common questions
+- **Is wrapped BTC safe?** Its safety depends on reserve custody, contract integrity, governance, the selected chain, and any bridge used. Verify the exact contract and reserve coverage before transacting.
+- **Who controls my funds?** You control WBTC held in a self-custody wallet, but custodians control the backing BTC.
+- **What fees apply?** Costs may include Bitcoin miner fees, destination-chain gas, exchange or merchant charges, swap fees, spreads, and slippage.
+- **How long does wrapping take?** A market swap may settle after normal chain confirmation; direct minting waits for six Bitcoin confirmations plus merchant processing.
+- **Which assets are supported?** The wrapped asset is BTC; WBTC exists in different token standards across its authorized networks.
+- **How do I start?** Choose a supported provider and network, verify the official token address, prepare a compatible wallet and gas token, then test with a small amount.
+- **Can I unwrap WBTC into BTC?** Yes, through a provider supporting WBTC deposits and native BTC withdrawal or through an approved merchant redemption route.
+
+## App
+- Dashboard: https://wrap-btc.github.io/
+- App: https://wrap-btc.github.io/dashboard/
+
+## Official resources
+WBTC Website: https://wbtc.network/
+WBTC Documentation: https://docs.wbtc.network/
+Proof of Reserves: https://wbtc.network/transparency
+Mint and Burn Mechanism: https://docs.wbtc.network/how-wbtc-works/mint-burn-mechanism
+Official Contract Addresses: https://docs.wbtc.network/resources/contract-addresses
+Wrapped Tokens Whitepaper: https://wbtc.network/assets/wrapped-tokens-whitepaper.pdf
+WBTC DAO Source: https://github.com/WrappedBTC/DAO
+Audit Directory: https://docs.wbtc.network/how-wbtc-works/audits-and-smart-contract-security
+Ethereum Audit: https://www.chainsecurity.com/security-audit/wrapped-bitcoin-wbtc
+Official X: https://x.com/WrappedBTC
+
+## Data & references
+Ethereum Token Explorer: https://etherscan.io/token/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599
+CoinGecko Market Data: https://www.coingecko.com/en/coins/wrapped-bitcoin
+DeFiLlama Token Data: https://defillama.com/token/WBTC
+ERC-20 Standard: https://eips.ethereum.org/EIPS/eip-20
+Ethereum Chain ID Reference: https://chainlist.org/chain/1
+CoinGecko WBTC Explainer: https://www.coingecko.com/learn/what-is-wrapped-bitcoin-wbtc-and-how-does-it-work
+Bitcoin Reference: https://en.wikipedia.org/wiki/Bitcoin
