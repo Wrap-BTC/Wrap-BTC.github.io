@@ -1,0 +1,19 @@
+{
+  "name": "Wrap BTC",
+  "short_name": "Wrap BTC",
+  "description": "Wrap BTC explained as an entity: how wrapped Bitcoin tracks BTC 1:1, how to acquire or redeem it, DEX swap costs, network contracts, custody and verification checks.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "lang": "en",
+  "background_color": "#f5f6f8",
+  "theme_color": "#f5f6f8",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
