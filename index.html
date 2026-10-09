@@ -1,673 +1,241 @@
-<!DOCTYPE html>
-
+﻿<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Wrap BTC — Dashboard</title>
-<meta content="Wrap BTC explained as an entity: how wrapped Bitcoin tracks BTC 1:1, how to acquire or redeem it, DEX swap costs, network contracts, custody and verification checks." name="description"/>
-<meta content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" name="robots"/>
-<meta content="#f5f6f8" name="theme-color"/>
-<link href="https://wrap-btc.github.io/" rel="canonical"/>
-<link href="favicon.png" rel="icon" type="image/png"/>
-<link href="favicon.png" rel="apple-touch-icon"/>
-<link href="manifest.webmanifest" rel="manifest"/>
-<link href="og-cover.png" rel="image_src"/>
-<link crossorigin="" href="https://api.coingecko.com" rel="preconnect"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wrap BTC — Turn Bitcoin into an Ethereum-Usable Token</title>
+<meta name="description" content="Wrap BTC to move Bitcoin's value onto Ethereum and other EVM chains as a 1:1-backed token. See how the custodial WBTC model and decentralized alternatives like tBTC mint, redeem and prove their reserves.">
+<link rel="canonical" href="https://wrap-btc.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wrap BTC">
+<meta property="og:url" content="https://wrap-btc.github.io/">
+<meta property="og:image" content="https://wrap-btc.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Wrap BTC">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@500;600;700&display=swap">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://wrap-btc.github.io/#website", "url": "https://wrap-btc.github.io/", "name": "Wrap BTC — Turn Bitcoin into an Ethereum-Usable Token"}, {"@type": "WebPage", "@id": "https://wrap-btc.github.io/#webpage", "url": "https://wrap-btc.github.io/", "name": "Wrap BTC — Turn Bitcoin into an Ethereum-Usable Token", "isPartOf": {"@id": "https://wrap-btc.github.io/#website"}, "description": "Wrap BTC to move Bitcoin's value onto Ethereum and other EVM chains as a 1:1-backed token. See how the custodial WBTC model and decentralized alternatives like tBTC mint, redeem and prove their reserves.", "datePublished": "2026-10-09", "dateModified": "2026-10-09"}, {"@type": "SoftwareApplication", "name": "Wrap BTC", "applicationCategory": "FinanceApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://wrap-btc.github.io/"}, {"@type": "ListItem", "position": 2, "name": "Wrapping"}, {"@type": "ListItem", "position": 3, "name": "Wrap BTC"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does it actually mean to Wrap BTC?", "acceptedAnswer": {"@type": "Answer", "text": "It means depositing native Bitcoin so it is held in reserve while a matching token is minted on Ethereum or another EVM chain. The token is a claim on that BTC, not a separate asset, and burning it releases the original coin."}}, {"@type": "Question", "name": "Why can't I just use Bitcoin directly in DeFi?", "acceptedAnswer": {"@type": "Answer", "text": "Bitcoin's scripting language does not support the general computation smart contracts need, so lending markets, liquidity pools and decentralized exchanges on Ethereum cannot read or move native BTC. A wrapped token gives Bitcoin a form those contracts can interact with."}}, {"@type": "Question", "name": "How is WBTC different from a decentralized wrap like tBTC?", "acceptedAnswer": {"@type": "Answer", "text": "WBTC uses a single custodian that holds the BTC reserve and publishes attestations proving it. tBTC spreads custody across a distributed network of signers using threshold cryptography, so no single party controls the deposited Bitcoin."}}, {"@type": "Question", "name": "Is a wrapped token always backed one-to-one?", "acceptedAnswer": {"@type": "Answer", "text": "That is the design goal of every major wrap, and it is what keeps the token's price tracking Bitcoin's. You can check the backing yourself by comparing circulating token supply against the provider's published reserve address."}}, {"@type": "Question", "name": "Can I unwrap back to native Bitcoin whenever I want?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, that is the point of the mint-and-burn design. You submit the wrapped token to be burned, provide a Bitcoin payout address, and the provider releases the equivalent BTC once the burn is confirmed."}}, {"@type": "Question", "name": "Does wrapping change Bitcoin's total supply?", "acceptedAnswer": {"@type": "Answer", "text": "No. Wrapping moves existing BTC into a reserve and issues a receipt against it; it does not create new Bitcoin. Unwrapping simply returns that same BTC to circulation on its own network."}}, {"@type": "Question", "name": "Which wrapped BTC has the most liquidity for DeFi?", "acceptedAnswer": {"@type": "Answer", "text": "WBTC remains the most widely integrated across lending markets, exchanges and liquidity pools, which is visible in trackers like DefiLlama, though decentralized alternatives are growing as more protocols add support for them."}}]}]}</script>
 <style>
-/* Wrap BTC — independent single-page hub. */
-:root {
-  color-scheme: light;
-  --bg: #f5f6f8; --surface: #ffffff; --panel: #ffffff; --raised: #f1f3f6;
-  --line: rgba(17, 24, 39, 0.10); --line-2: rgba(17, 24, 39, 0.16);
-  --ink: #0e1016; --text: #464d59; --muted: #6a7280; --faint: #98a0ad;
-  --accent: #3d5de6; --accent-2: #2c45c8; --accent-soft: rgba(61, 93, 230, 0.10); --accent-glow: rgba(61, 93, 230, 0.22);
-  --cyan: #0e93a8; --cta: #3d5de6; --cta-ink: #ffffff;
-  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 20px;
-  --mono: ui-monospace, "SF Mono", SFMono-Regular, "Roboto Mono", Menlo, Consolas, monospace;
-  --font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --ease: cubic-bezier(0.22, 0.7, 0.24, 1);
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-body {
-  margin: 0; min-width: 320px;
-  color: var(--text); background: var(--bg);
-  font-family: var(--font); font-size: 15px; line-height: 1.55;
-  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
-}
-a { color: inherit; text-decoration: none; }
-a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; border-radius: 8px; }
-img { display: block; max-width: 100%; }
-.skip { position: absolute; left: -999px; }
-.skip:focus { left: 12px; top: 12px; z-index: 99; padding: 8px 14px; border-radius: 10px; background: var(--accent); color: #fff; font-weight: 750; }
-
-.shell { display: flex; min-height: 100dvh; }
-
-/* ───────── sidebar (off-canvas drawer) ───────── */
-.sidebar {
-  position: fixed; top: 0; left: 0; z-index: 70;
-  width: min(288px, 86vw); height: 100vh; height: 100dvh; overflow-y: auto;
-  display: flex; flex-direction: column; padding: 16px 12px 14px;
-  background: var(--surface); border-right: 1px solid var(--line);
-  transform: translateX(-100%); transition: transform 0.24s var(--ease);
-  box-shadow: 24px 0 70px rgba(17, 24, 39, 0.15);
-}
-.sidebar.is-open { transform: none; }
-.scrim { position: fixed; inset: 0; z-index: 65; background: rgba(17, 24, 39, 0.30); opacity: 0; pointer-events: none; transition: opacity 0.24s var(--ease); }
-.scrim.is-open { opacity: 1; pointer-events: auto; }
-html:not(.js) .sidebar { position: static; transform: none; width: 262px; height: auto; box-shadow: none; }
-html:not(.js) .scrim, html:not(.js) .nav-toggle { display: none; }
-.side-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 2px 8px 6px; }
-.brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
-.brand-logo { width: 32px; height: 32px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 9px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--line-2); }
-.brand-logo img { width: 20px; height: 20px; border-radius: 6px; }
-.brand-name { margin: 0; font-size: 17px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); line-height: 1; }
-.nav-label { margin: 14px 12px 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--faint); }
-.nav-item { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 9px; color: var(--text); font-size: 14px; font-weight: 600; transition: color 150ms var(--ease), background-color 150ms var(--ease); }
-.ni-ico { width: 18px; height: 18px; flex: 0 0 auto; color: var(--muted); }
-.ni-ext { margin-left: auto; color: var(--faint); font-size: 12px; }
-.nav-item:hover { color: var(--ink); background: rgba(17, 24, 39, 0.04); }
-.nav-item:hover .ni-ico { color: var(--text); }
-.nav-item.is-active { color: var(--accent-2); background: transparent; }
-.nav-item.is-active .ni-ico { color: var(--accent-2); }
-.nav-group { border-radius: 9px; }
-.nav-group summary { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 9px; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; list-style: none; transition: color 150ms var(--ease), background-color 150ms var(--ease); }
-.nav-group summary::-webkit-details-marker { display: none; }
-.nav-group summary .ni-ico { color: var(--muted); }
-.nav-group summary .chev { width: 15px; height: 15px; margin-left: auto; color: var(--faint); transition: transform 200ms var(--ease); }
-.nav-group summary:hover { color: var(--ink); background: rgba(17, 24, 39, 0.04); }
-.nav-group[open] summary { color: var(--ink); }
-.nav-group[open] summary .ni-ico { color: var(--text); }
-.nav-group[open] summary .chev { transform: rotate(180deg); }
-@media (prefers-reduced-motion: reduce) { .nav-group summary .chev { transition: none; } }
-.nav-sub { display: flex; flex-direction: column; gap: 1px; padding: 2px 0 8px 42px; }
-.nav-sub a { display: flex; align-items: baseline; gap: 7px; padding: 6px 10px; border-radius: 8px; color: var(--muted); font-size: 12.5px; font-weight: 550; transition: color 150ms var(--ease), background-color 150ms var(--ease); }
-.nav-sub a small { color: var(--faint); font-size: 10.5px; font-weight: 500; }
-.nav-sub a:hover { color: var(--accent-2); background: rgba(17, 24, 39, 0.04); }
-.nav-sub a:hover small { color: var(--muted); }
-.sidebar-foot { margin-top: auto; padding-top: 13px; border-top: 1px solid var(--line); }
-.disclose { margin: 8px 10px 0; font-size: 11px; line-height: 1.5; color: var(--muted); }
-.disclose strong { color: var(--text); font-weight: 700; }
-.fine { margin: 6px 10px 0; font-size: 10.5px; line-height: 1.45; color: var(--faint); }
-.nav-toggle { display: inline-flex; width: 38px; height: 38px; flex: 0 0 auto; position: relative; padding: 0; border: 1px solid var(--line-2); border-radius: 10px; background: var(--raised); color: var(--ink); cursor: pointer; }
-.nav-toggle .bar { position: absolute; left: 10px; right: 10px; height: 2px; border-radius: 2px; background: currentColor; transition: transform 0.22s var(--ease), opacity 0.18s var(--ease); }
-.nav-toggle .bar:nth-child(1) { top: 13px; } .nav-toggle .bar:nth-child(2) { top: 18px; } .nav-toggle .bar:nth-child(3) { top: 23px; }
-.sidebar.is-open .nav-toggle .bar:nth-child(1) { transform: translateY(5px) rotate(45deg); }
-.sidebar.is-open .nav-toggle .bar:nth-child(2) { opacity: 0; }
-.sidebar.is-open .nav-toggle .bar:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
-
-/* persistent header: hamburger + logo + H1 */
-.topbar-left { display: flex; align-items: center; gap: 12px 14px; min-width: 0; flex-wrap: wrap; }
-.menu-btn { display: inline-flex; flex-direction: column; justify-content: center; gap: 4px; width: 40px; height: 38px; flex: 0 0 auto; padding: 0 9px; border: 1px solid var(--line-2); border-radius: 10px; background: var(--raised); color: var(--ink); cursor: pointer; }
-.menu-btn .bar { display: block; height: 2px; width: 100%; border-radius: 2px; background: currentColor; transition: transform 0.22s var(--ease), opacity 0.18s var(--ease); }
-.menu-btn:hover { border-color: var(--accent); color: var(--accent-2); }
-.shell.nav-open .menu-btn .bar:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-.shell.nav-open .menu-btn .bar:nth-child(2) { opacity: 0; }
-.shell.nav-open .menu-btn .bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-.topbar-logo { width: 32px; height: 32px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 9px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--line-2); }
-.topbar-logo img { width: 20px; height: 20px; border-radius: 6px; }
-h1.wordmark { margin: 0; font-size: 17px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); line-height: 1; white-space: nowrap; }
-html:not(.js) .menu-btn { display: none; }
-
-/* ───────── main / topbar ───────── */
-.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.topbar { position: relative; z-index: 40; flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; padding: 21px 26px; border-bottom: 0; background: transparent; }
-.topbar-right { display: flex; align-items: center; gap: 10px 18px; flex-wrap: wrap; }
-.mode-switch { display: inline-flex; align-items: center; gap: 10px; }
-.ms-label { font-size: 13.5px; font-weight: 700; color: var(--muted); transition: color 150ms var(--ease); }
-.ms-label.is-on { color: var(--ink); }
-.ms-track { position: relative; width: 42px; height: 24px; flex: 0 0 auto; padding: 0; border: 1px solid var(--line-2); border-radius: 999px; background: var(--raised); cursor: pointer; transition: background-color 180ms var(--ease); }
-.ms-knob { position: absolute; top: 50%; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--ink); transform: translateY(-50%); transition: left 200ms var(--ease); }
-.ms-track[aria-checked="true"] { background: var(--accent-soft); border-color: rgba(61, 93, 230, 0.4); }
-.ms-track[aria-checked="true"] .ms-knob { left: 23px; background: var(--accent-2); }
-.ticker { display: flex; align-items: center; flex-wrap: wrap; gap: 3px 16px; min-width: 0; }
-.tick { display: inline-flex; align-items: baseline; gap: 6px; color: var(--faint); font-size: 11px; font-weight: 550; letter-spacing: 0.01em; transition: color 150ms var(--ease); }
-.tick b { color: var(--muted); font-family: var(--mono); font-size: 11.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.tick .ext { color: var(--faint); font-size: 9.5px; transition: color 150ms var(--ease); }
-.tick:hover { color: var(--muted); } .tick:hover b, .tick:hover .ext { color: var(--accent-2); }
-.btn-open { display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px; border: 1px solid var(--line-2); border-radius: 10px; color: var(--ink); background: rgba(17, 24, 39, 0.04); font-size: 12.5px; font-weight: 700; white-space: nowrap; transition: border-color 150ms var(--ease), background-color 150ms var(--ease); }
-.btn-open:hover { border-color: var(--accent); color: var(--accent-2); }
-
-/* ───────── first screen: hero + swap card ───────── */
-.stage { position: relative; min-height: calc(100dvh - 56px); width: min(560px, 100%); margin-inline: auto; padding: clamp(16px, 3vh, 40px) 24px clamp(52px, 9vh, 96px); display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: clamp(14px, 3vh, 26px); }
-.hero { text-align: center; margin: 0; }
-.hero-h2 { margin: 0; font-size: clamp(1.5rem, 3.6vw, 2.1rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.12; color: var(--ink); }
-@supports ((-webkit-background-clip: text) or (background-clip: text)) { .hero-h2 { background: linear-gradient(180deg, #0e1016, #3a4c85); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; } }
-.hero-sub { margin: 10px auto 0; max-width: 48ch; font-size: 13.5px; line-height: 1.55; color: var(--text); }
-.hero-sub strong { color: var(--ink); font-weight: 700; }
-.swap-card { border: 1px solid var(--line-2); border-radius: var(--r-xl); background: var(--panel); padding: 16px; }
-.card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding: 0 2px; }
-.card-title { margin: 0; font-size: 11.5px; font-weight: 750; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
-.preview-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid var(--line-2); border-radius: 999px; color: var(--accent-2); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-.preview-tag > span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-.leg { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 15px 16px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--raised); }
-.asset { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px 6px 6px; border: 1px solid var(--line-2); border-radius: 999px; background: rgba(17, 24, 39, 0.04); color: var(--ink); font-size: 14px; font-weight: 700; }
-.asset .tok { width: 26px; height: 26px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: #fff; }
-.asset .tok img { width: 26px; height: 26px; }
-.asset .chev-sm { width: 15px; height: 15px; color: var(--muted); }
-.leg-amt { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; min-width: 0; }
-.leg-amt .amount { font-family: var(--mono); font-size: 1.7rem; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1; }
-.leg-amt .leg-sub { font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--faint); }
-.swap-arrow { position: relative; z-index: 1; display: grid; place-items: center; width: 40px; height: 40px; margin: -12px auto; border: 3px solid var(--panel); border-radius: 12px; background: var(--raised); color: var(--accent-2); cursor: pointer; box-shadow: 0 0 0 1px var(--line-2); transition: transform 220ms var(--ease), color 150ms var(--ease); }
-.swap-arrow svg { width: 17px; height: 17px; }
-.swap-arrow:hover { color: #fff; transform: rotate(180deg); }
-.route-panel { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; padding: 13px 15px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raised); }
-.route-info b { display: block; color: var(--ink); font-size: 13.5px; font-weight: 700; letter-spacing: 0.01em; }
-.route-info span { display: block; margin-top: 2px; color: var(--faint); font-size: 11.5px; }
-.route-tok { display: inline-flex; align-items: center; gap: 7px; color: var(--text); font-size: 13px; font-weight: 650; white-space: nowrap; }
-.route-tok .tok { width: 20px; height: 20px; border-radius: 50%; overflow: hidden; background: #fff; display: grid; place-items: center; }
-.route-tok .tok img { width: 20px; height: 20px; }
-.route-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 4px 2px; border-top: 1px solid var(--line); margin-top: 10px; }
-.route-row span { font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint); }
-.route-row b { color: var(--text); font-size: 12.5px; font-weight: 650; font-variant-numeric: tabular-nums; }
-.swap-cta { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; padding: 15px; border-radius: var(--r-md); color: var(--cta-ink); background: var(--cta); font-size: 15px; font-weight: 750; letter-spacing: 0.01em; transition: filter 150ms var(--ease), transform 150ms var(--ease); }
-.swap-cta:hover { filter: brightness(1.04); transform: translateY(-1px); }
-/* scroll cue at the foot of the first screen */
-.scroll-cue { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; }
-.scroll-cue a { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; color: var(--faint); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
-.scroll-cue a:hover { color: var(--accent-2); }
-.scroll-cue svg { width: 16px; height: 16px; animation: cue 1.8s var(--ease) infinite; }
-@keyframes cue { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
-@media (prefers-reduced-motion: reduce) { .scroll-cue svg { animation: none; } }
-
-/* ───────── merged content (all in initial HTML; revealed on scroll) ───────── */
-.content { width: min(760px, 100%); margin: 0 auto; padding: clamp(56px, 12vh, 140px) 24px 88px; }
-.content .lead-in { padding: clamp(4px, 1vh, 12px) 0 clamp(10px, 2.5vh, 22px); }
-.content .lead-in > p { margin: 0 0 16px; font-size: 15px; line-height: 1.66; color: var(--text); }
-.content .lead-in > p strong { color: var(--ink); font-weight: 700; }
-/* premium feature card (modern-site feel) */
-.content .lead-in .feat{position:relative;width:min(1120px,calc(100vw - 44px));margin-left:50%;transform:translateX(-50%);display:grid;grid-template-columns:1.08fr .92fr;align-items:stretch;background:linear-gradient(165deg,#141824,#0b0e15);border:1px solid rgba(255,255,255,.09);border-radius:28px;overflow:hidden;box-shadow:0 52px 120px -55px rgba(0,0,0,.82)}
-.feat-l{padding:clamp(32px,4vw,64px);display:flex;flex-direction:column;justify-content:center}
-.feat-l h2{margin:0;font-size:clamp(2.2rem,4.6vw,3.2rem);line-height:1.03;font-weight:800;letter-spacing:-.03em;color:#fff}
-.feat-lead{margin:20px 0 0;font-size:17px;line-height:1.6;color:rgba(255,255,255,.9);max-width:48ch}
-.content .lead-in .feat-lead a{color:#fff;text-decoration:underline;text-decoration-color:rgba(255,255,255,.55);text-underline-offset:3px}
-.content .lead-in .feat-lead a:hover{text-decoration-color:#fff}
-.feat-cta{margin:32px 0 0}
-.content .lead-in .feat-btn{display:inline-flex;align-items:center;gap:10px;padding:17px 38px;border-radius:999px;background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 50%,#7c4dff));color:#fff;font-weight:750;font-size:16.5px;text-decoration:none;box-shadow:0 20px 44px -12px var(--accent-glow);transition:transform .16s var(--ease),box-shadow .16s var(--ease)}
-.content .lead-in .feat-btn:hover{transform:translateY(-2px);box-shadow:0 26px 56px -14px var(--accent-glow)}
-.feat-btn .arr{transition:transform .18s var(--ease)}
-.content .lead-in .feat-btn:hover .arr{transform:translateX(3px)}
-.feat-more{margin:18px 0 0}
-.feat-readmore{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;color:rgba(255,255,255,.7);transition:color .15s var(--ease)}
-.feat-readmore::-webkit-details-marker{display:none}
-.feat-readmore:hover{color:#fff}
-.feat-readmore .chev{width:15px;height:15px;transition:transform .2s var(--ease)}
-.feat-more[open] .feat-readmore .chev{transform:rotate(180deg)}
-.feat-detail{margin:20px 0 0;font-size:14.5px;line-height:1.72;color:rgba(255,255,255,.82)}
-.content .lead-in .feat-detail a{color:#fff;text-decoration:underline;text-decoration-color:rgba(255,255,255,.55);text-underline-offset:3px}
-.feat-more:not([open]) .feat-detail{display:none}
-.content .lead-in .feat-lead{color:rgba(255,255,255,.9)}
-.content .lead-in .feat-detail,.content .lead-in .feat-detail p{color:rgba(255,255,255,.82)}
-.feat-facts{display:grid;grid-template-columns:1fr 1fr;gap:0 26px;margin:18px 0 2px}
-.feat-fact{padding:10px 0;border-top:1px solid rgba(255,255,255,.1)}
-.feat-fact .fl{display:block;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.5);margin:0 0 3px}
-.feat-fact .fv{display:block;font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.88)}
-.feat-r{position:relative;overflow:hidden;min-height:clamp(300px,32vw,440px);background:radial-gradient(120% 105% at 70% 22%,color-mix(in srgb,var(--accent) 52%,#1a1030),#0a0d14 70%)}
-.feat-r::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:36px 36px;-webkit-mask:radial-gradient(70% 72% at 64% 36%,#000,transparent 76%);mask:radial-gradient(70% 72% at 64% 36%,#000,transparent 76%)}
-.feat-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;width:clamp(122px,16vw,166px);height:clamp(122px,16vw,166px);border-radius:34px;display:grid;place-items:center;background:linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,.02));box-shadow:0 38px 84px -22px var(--accent-glow),inset 0 0 0 1px rgba(255,255,255,.18)}
-.feat-badge img{width:52%;height:52%;object-fit:contain}
-@media (max-width:860px){
-  .content .lead-in .feat{width:calc(100vw - 28px);grid-template-columns:1fr}
-  .feat-l{padding:30px 22px 32px}
-  .feat-r{min-height:200px}
-  .feat-facts{grid-template-columns:1fr}
-}
-
-.tbl.spec table { min-width: 0; }
-.tbl.spec td:first-child { color: var(--muted); font-weight: 600; white-space: nowrap; width: 1%; }
-.content .sec { border-top: 1px solid var(--line); scroll-margin-top: 66px; }
-.content .sec:first-child { border-top: 0; }
-.content .sec > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: clamp(20px, 4vh, 32px) 0; }
-.content .sec > summary::-webkit-details-marker { display: none; }
-.content .sec > summary h2 { margin: 0; font-size: clamp(1.25rem, 2.8vw, 1.6rem); font-weight: 800; letter-spacing: -0.02em; color: var(--ink); transition: color 150ms var(--ease); }
-.content .sec > summary::after { content: "+"; flex: 0 0 auto; color: var(--accent); font-weight: 700; font-size: 1.5rem; line-height: 1; }
-.content .sec[open] > summary::after { content: "\2212"; }
-.content .sec > summary:hover h2 { color: var(--accent-2); }
-.content .sec-body { padding: 0 0 clamp(22px, 4vh, 34px); }
-.content .sec[open] .sec-body { animation: secdrop 0.22s var(--ease); }
-@keyframes secdrop { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .content .sec[open] .sec-body { animation: none; } }
-.content p { margin: 0 0 13px; color: var(--text); }
-.content p strong, .content li strong { color: var(--ink); font-weight: 700; }
-.content ul, .content ol { margin: 0 0 14px; padding-left: 20px; }
-.content li { margin-bottom: 8px; color: var(--text); }
-.content li::marker { color: var(--accent); }
-/* inline source links — blend with the copy, brighten only on hover */
-.content .sec-body a, .content .qa .a a, .content .lead-in a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: rgba(17, 24, 39, 0.26); transition: color 150ms var(--ease), text-decoration-color 150ms var(--ease); }
-.content .sec-body a:hover, .content .qa .a a:hover, .content .lead-in a:hover { color: var(--accent-2); text-decoration-color: var(--accent-2); }
-.content .sec-body a.addr { text-decoration-color: rgba(134, 160, 255, 0.32); }
-.cite { margin: 4px 0 0; font-size: 12px; color: var(--faint); }
-.cite a { color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
-.cite a:hover { color: var(--accent-2); }
-.tbl { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-md); margin: 4px 0 14px; background: var(--panel); }
-.tbl table { border-collapse: collapse; width: 100%; font-size: 13px; min-width: 460px; }
-.tbl th { text-align: left; font-weight: 700; color: var(--accent-2); background: rgba(17, 24, 39, 0.04); padding: 10px 13px; border-bottom: 1px solid var(--line-2); font-size: 11.5px; letter-spacing: 0.02em; }
-.tbl td { padding: 10px 13px; border-bottom: 1px solid var(--line); color: var(--text); vertical-align: top; }
-.tbl tr:last-child td { border-bottom: 0; }
-.tbl td:first-child { color: var(--ink); font-weight: 600; }
-.qa { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); margin: 0 0 10px; overflow: hidden; }
-.qa summary { padding: 15px 18px; color: var(--ink); font-weight: 650; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 12px; font-size: 14.5px; }
-.qa summary::-webkit-details-marker { display: none; }
-.qa summary::after { content: "+"; color: var(--accent); font-weight: 700; font-size: 1.15rem; line-height: 1; }
-.qa[open] summary::after { content: "−"; }
-.qa[open] { border-color: var(--line-2); }
-.qa .a { padding: 0 18px 15px; color: var(--text); font-size: 13.5px; }
-.qa .a p { margin: 0 0 8px; }
-.addr { font-family: var(--mono); font-size: 12px; color: var(--accent-2); word-break: break-all; }
-.disclosure-box { margin: 24px 0 0; padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); font-size: 12.5px; line-height: 1.6; color: var(--muted); }
-.disclosure-box strong { color: var(--text); }
-/* scroll-reveal — content is always present; JS only animates it in */
-html.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
-html.js .reveal.in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) { html.js .reveal { opacity: 1; transform: none; transition: none; } }
-
-/* ───────── responsive ───────── */
-@media (max-width: 560px) {
-  .topbar { padding: 10px 16px; }
-  .stage { padding: 16px 16px 40px; }
-  .content { padding: clamp(40px, 9vh, 90px) 16px 72px; }
-  .ticker { display: none; }
-  .leg-amt .amount { font-size: 1.5rem; }
-}
-@media (max-height: 720px) and (min-width: 561px) {
-  .hero-h2 { font-size: clamp(1.35rem, 3.2vw, 1.9rem); }
-  .hero-sub { font-size: 13px; margin-top: 8px; }
-  .swap-card { padding: 13px; }
-  .leg { padding: 12px 14px; }
-  .leg-amt .amount { font-size: 1.45rem; }
-  .route-panel { margin-top: 9px; padding: 11px 14px; }
-  .swap-cta { margin-top: 12px; padding: 13px; }
-}
-.swap-cta { font-size: 16px; box-shadow: 0 10px 24px rgba(61, 93, 230, 0.30); }
-.swap-cta .cta-ico { width: 17px; height: 17px; flex: 0 0 auto; }
-.swap-cta .cta-go { transition: transform 0.18s var(--ease); }
-.swap-cta:hover .cta-go { transform: translateX(3px); }
-.cta-note { margin: 9px 0 0; text-align: center; font-size: 11.5px; color: var(--faint); letter-spacing: 0.02em; }
-.field-notes { margin: clamp(28px,5vh,52px) 0 0; padding: 20px 22px; border: 1px solid var(--line-2); border-left: 3px solid var(--accent); border-radius: var(--r-md); background: var(--panel); }
-.field-notes h2 { margin: 0 0 12px; font-size: clamp(1.15rem,2.6vw,1.4rem); font-weight: 800; letter-spacing: -0.02em; color: var(--ink); }
-.field-notes .fn-body { color: var(--text); font-size: 14px; line-height: 1.66; }
-.field-notes .fn-body strong { color: var(--ink); font-weight: 700; }
-.field-notes .fn-body ul { margin: 8px 0 0; padding-left: 20px; }
-.field-notes .fn-body li { margin-bottom: 6px; }
-.content .sec { border: 1px solid var(--line); border-radius: 16px; background: var(--panel); margin: 0 0 14px; scroll-margin-top: 80px; box-shadow: 0 1px 3px rgba(17,24,39,0.05); transition: box-shadow .24s var(--ease), border-color .24s var(--ease), transform .24s var(--ease); }
-.content .sec:hover { border-color: var(--line-2); box-shadow: 0 14px 34px -16px rgba(17,24,39,0.18); }
-.content .sec[open] { border-color: rgba(61,93,230,0.30); box-shadow: 0 18px 46px -18px rgba(61,93,230,0.24); }
-.content .sec > summary { padding: clamp(17px,2.6vh,24px) clamp(18px,3vw,26px); gap: 18px; border-radius: 16px; }
-.content .sec > summary h2 { font-size: clamp(1.12rem,2.5vw,1.4rem); }
-.content .sec > summary::after { content: ""; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line-2); background: var(--raised) no-repeat center; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%233d5de6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>'); transition: transform .28s var(--ease), background-color .2s var(--ease), border-color .2s var(--ease); }
-.content .sec:hover > summary::after { border-color: var(--accent); }
-.content .sec[open] > summary::after { transform: rotate(180deg); background-color: var(--accent-soft); border-color: rgba(61,93,230,0.42); }
-.content .sec-body { padding: 0 clamp(18px,3vw,26px) clamp(20px,3vh,28px); }
-.content .sec-body > p:first-child, .content .sec-body > ul:first-child, .content .sec-body > ol:first-child { margin-top: 0; }
-.content #faq .qa { border-radius: 12px; margin: 0 0 10px; transition: border-color .2s var(--ease), box-shadow .2s var(--ease); }
-.content #faq .qa:hover { box-shadow: 0 8px 22px -12px rgba(17,24,39,0.14); }
-.content #faq .qa[open] { border-color: rgba(61,93,230,0.28); }
-/* ── hybrid: mantle-style 2-col hero ── */
-.hero2 { display: grid; grid-template-columns: 1.05fr 0.95fr; align-items: stretch; min-height: calc(100dvh - 62px); position: relative; border-bottom: 1px solid var(--line); }
-.hero2-l { display: flex; flex-direction: column; justify-content: center; padding: clamp(40px,7vh,86px) clamp(24px,4vw,60px); }
-.hero2-h { margin: 0; font-size: clamp(2.3rem,5.2vw,3.9rem); line-height: 1.03; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); }
-.hero2-lead { margin: 20px 0 0; max-width: 46ch; font-size: 16px; line-height: 1.55; color: var(--text); }
-.hero2-lead strong { color: var(--ink); font-weight: 700; }
-.hero2-cta { display: flex; flex-wrap: wrap; gap: 12px; margin: 30px 0 0; }
-.btn2 { display: inline-flex; align-items: center; gap: 8px; border-radius: 12px; font-weight: 750; font-size: 15px; cursor: pointer; transition: transform .16s var(--ease), border-color .16s var(--ease), background-color .16s var(--ease); }
-.btn2-primary { padding: 15px 24px; background: var(--ink); color: #fff; border: 0; box-shadow: 0 14px 30px -12px rgba(17,24,39,.5); }
-.btn2-primary:hover { transform: translateY(-2px); }
-.btn2-primary .go { transition: transform .18s var(--ease); }
-.btn2-primary:hover .go { transform: translate(2px,-2px); }
-.btn2-ghost { padding: 15px 22px; background: transparent; color: var(--ink); border: 1px solid var(--line-2); }
-.btn2-ghost:hover { border-color: var(--ink); }
-.hero2-r { position: relative; display: flex; align-items: center; justify-content: center; padding: clamp(28px,5vh,56px) clamp(20px,3vw,48px); overflow: hidden; background: radial-gradient(120% 100% at 80% 8%, color-mix(in srgb, var(--accent-2) 58%, #05070d), #05070d 62%); }
-.hero2-r::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px); background-size: 26px 26px; -webkit-mask: radial-gradient(70% 70% at 70% 30%, #000, transparent); mask: radial-gradient(70% 70% at 70% 30%, #000, transparent); }
-.hero2-r .swap-card { position: relative; width: 100%; max-width: 392px; box-shadow: 0 40px 90px -30px rgba(0,0,0,.6); }
-.scrollcue2 { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); display: inline-flex; flex-direction: column; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--faint); z-index: 4; }
-.scrollcue2 svg { width: 16px; height: 16px; animation: cue 1.9s var(--ease) infinite; }
-.scrollcue2:hover { color: var(--accent-2); }
-@media (max-width: 900px) {
-  .hero2 { grid-template-columns: 1fr; min-height: 0; }
-  .hero2-l { padding: 38px 18px 26px; }
-  .hero2-r { padding: 0 18px 38px; background: none; }
-  .hero2-r::before { display: none; }
-  .hero2-r .swap-card { max-width: 520px; box-shadow: 0 20px 50px -24px rgba(17,24,39,.35); }
-  .scrollcue2 { display: none; }
-}
-/* ── hybrid: "Continue to Swap" modal ── */
-.mroot { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 20px; }
-.mroot[hidden] { display: none; }
-.mbg { position: absolute; inset: 0; background: rgba(17,24,39,.46); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); opacity: 0; transition: opacity .22s var(--ease); }
-.mcard { position: relative; width: 100%; max-width: 392px; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 50px 110px -30px rgba(0,0,0,.5); padding: 22px; opacity: 0; transform: translateY(10px) scale(.985); transition: opacity .24s var(--ease), transform .24s var(--ease); }
-.mroot.in .mbg { opacity: 1; }
-.mroot.in .mcard { opacity: 1; transform: none; }
-.mtop { display: flex; align-items: center; justify-content: space-between; margin: 0 0 18px; }
-.mbrand { display: flex; align-items: center; gap: 9px; font-weight: 800; color: var(--ink); font-size: 14.5px; letter-spacing: -.02em; }
-.mbrand img { width: 22px; height: 22px; border-radius: 6px; }
-.mx { width: 30px; height: 30px; border-radius: 9px; border: 1px solid var(--line); background: var(--raised); color: var(--muted); display: grid; place-items: center; cursor: pointer; transition: .16s var(--ease); }
-.mx:hover { color: var(--ink); border-color: var(--line-2); }
-.mroute { display: flex; align-items: center; justify-content: center; gap: 16px; background: var(--raised); border: 1px solid var(--line); border-radius: 16px; padding: 18px 16px; margin: 0 0 16px; }
-.mchip { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.mchip img { width: 34px; height: 34px; border-radius: 50%; }
-.mchip b { font-size: 14px; font-weight: 800; color: var(--ink); }
-.mchip span { font-size: 11px; color: var(--muted); font-weight: 600; }
-.marrow { color: var(--muted); display: grid; place-items: center; }
-.mbar { height: 4px; border-radius: 3px; background: var(--line); overflow: hidden; margin: 0 0 12px; }
-.mbar i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 3px; transition: width 1.15s var(--ease); }
-.mscan { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--text); padding: 0 2px 16px; }
-.mspin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line-2); border-top-color: var(--accent-2); animation: spin .7s linear infinite; flex: none; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.mcheck { width: 16px; height: 16px; color: var(--accent-2); flex: none; }
-.mscan.done { color: var(--ink); }
-.mcta { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 15px; border-radius: 12px; background: var(--ink); color: #fff; font-weight: 800; font-size: 15px; transition: .18s var(--ease); }
-.mcta:hover { transform: translateY(-1px); box-shadow: 0 16px 32px -14px rgba(17,24,39,.55); }
-.mnote { text-align: center; font-size: 11px; color: var(--muted); margin: 12px 2px 0; line-height: 1.5; }
-.mnote a { color: var(--accent-2); font-weight: 600; text-decoration: none; }
-@media (prefers-reduced-motion: reduce) { .scrollcue2 svg, .mspin { animation: none; } .mbar i { transition: none; } }
-/* docs layout (sticky TOC + open sections) */
-.docs{position:relative;width:min(1120px,calc(100vw - 44px));margin-left:50%;transform:translateX(-50%);display:grid;grid-template-columns:236px minmax(0,1fr);gap:clamp(28px,4vw,60px);margin-top:clamp(40px,6vh,72px);align-items:start}
-.toc{position:sticky;top:74px;align-self:start;max-height:calc(100dvh - 96px);overflow:auto}
-.toc-h{margin:0 0 10px;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding-left:13px}
-.toc a{display:block;padding:7px 13px;border-left:2px solid var(--line);color:var(--muted);font-size:13px;font-weight:600;line-height:1.35;text-decoration:none;transition:color .15s var(--ease),border-color .15s var(--ease)}
-.toc a:hover{color:var(--ink)}
-.toc a.active{color:var(--accent-2);border-left-color:var(--accent);font-weight:750}
-.doc-main{min-width:0}
-.content .doc-sec{border:1px solid var(--line);border-radius:20px;background:var(--panel);box-shadow:0 1px 3px rgba(17,24,39,.04);margin:0 0 16px;padding:0;scroll-margin-top:82px;transition:box-shadow .26s var(--ease),border-color .26s var(--ease)}
-.content .doc-sec:first-child{border-top:1px solid var(--line)}
-.content .doc-sec:hover{border-color:var(--line-2);box-shadow:0 16px 40px -22px rgba(17,24,39,.18)}
-.content .doc-sec[open]{border-color:var(--line)}
-.content .doc-sec>summary{cursor:default;pointer-events:none;padding:clamp(20px,3vh,28px) clamp(22px,3.2vw,32px) 8px;list-style:none}
-.content .doc-sec>summary::-webkit-details-marker{display:none}
-.content .doc-sec>summary::after{display:none}
-.content .doc-sec>summary h2{font-size:clamp(1.2rem,2.3vw,1.5rem)}
-.content .doc-sec .sec-body{padding:0 clamp(22px,3.2vw,32px) clamp(22px,3.4vh,30px);max-width:74ch}
-.content .doc-sec.field-notes{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:20px;background:var(--panel);box-shadow:0 1px 3px rgba(17,24,39,.04);margin:0 0 16px;padding:clamp(22px,3vh,28px) clamp(22px,3.2vw,32px)}
-.content .doc-sec.field-notes h2{font-size:clamp(1.2rem,2.3vw,1.5rem)}
-.content .doc-sec.field-notes .fn-body{max-width:74ch}
-@media (max-width:900px){
-  .docs{grid-template-columns:1fr;width:calc(100vw - 28px);gap:0}
-  .toc{position:sticky;top:56px;z-index:20;display:flex;gap:8px;overflow-x:auto;max-height:none;background:var(--bg);padding:11px 2px;margin:0 0 6px;border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch}
-  .toc-h{display:none}
-  .toc a{flex:0 0 auto;white-space:nowrap;border-left:0;border:1px solid var(--line);border-radius:999px;padding:8px 15px;font-size:12.5px}
-  .toc a.active{color:var(--accent-2);border-color:var(--accent);background:var(--accent-soft)}
-}
-.site-foot{width:min(1120px,calc(100vw - 44px));margin:clamp(34px,5vh,60px) auto 0;padding:22px 2px clamp(30px,4vh,48px);color:var(--faint);font-size:12.5px;line-height:1.6}
-.site-foot p{margin:0 0 6px;max-width:82ch}
-.site-foot strong{color:var(--muted);font-weight:700}
-.site-foot .foot-fine{font-size:11.5px}
-  </style>
-<meta content="website" property="og:type"/><meta content="https://wrap-btc.github.io/" property="og:url"/>
-<meta content="Wrap BTC — Dashboard" property="og:title"/>
-<meta content="Wrap BTC explained as an entity: how wrapped Bitcoin tracks BTC 1:1, how to acquire or redeem it, DEX swap costs, network contracts, custody and verification checks." property="og:description"/>
-<meta content="Wrap BTC" property="og:site_name"/><meta content="https://wrap-btc.github.io/og-cover.png" property="og:image"/>
-<meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="Wrap BTC — independent dashboard" property="og:image:alt"/>
-<meta content="summary_large_image" name="twitter:card"/><meta content="Wrap BTC — Dashboard" name="twitter:title"/>
-<meta content="Wrap BTC explained as an entity: how wrapped Bitcoin tracks BTC 1:1, how to acquire or redeem it, DEX swap costs, network contracts, custody and verification checks." name="twitter:description"/><meta content="https://wrap-btc.github.io/og-cover.png" name="twitter:image"/>
-<script type="application/ld+json">
-  {"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://wrap-btc.github.io/#website", "url": "https://wrap-btc.github.io/", "name": "Wrap BTC", "inLanguage": "en"}, {"@type": "Thing", "@id": "https://wrap-btc.github.io/#brand", "name": "BTC", "alternateName": ["Wrap BTC", "BTC"], "description": "BTC — how to acquire, convert, and swap the token on-chain.", "sameAs": ["https://docs.wbtc.network/", "https://ethereum.org/bridges", "https://www.coingecko.com/en/coins/wrapped-bitcoin", "https://docs.wbtc.network/using-wbtc/how-to-convert-btc-to-wbtc", "https://docs.wbtc.network/using-wbtc/how-to-convert-wbtc-to-btc"]}, {"@type": "WebPage", "@id": "https://wrap-btc.github.io/#webpage", "url": "https://wrap-btc.github.io/", "name": "Wrap BTC — Dashboard", "description": "Wrap BTC explained as an entity: how wrapped Bitcoin tracks BTC 1:1, how to acquire or redeem it, DEX swap costs, network contracts, custody and verification checks.", "isPartOf": {"@id": "https://wrap-btc.github.io/#website"}, "about": {"@id": "https://wrap-btc.github.io/#brand"}, "mainEntity": {"@id": "https://wrap-btc.github.io/#brand"}, "inLanguage": "en", "dateModified": "2026-07-21"}, {"@type": "FAQPage", "@id": "https://wrap-btc.github.io/#faq", "mainEntity": [{"@type": "Question", "name": "What is wrapped BTC?", "acceptedAnswer": {"@type": "Answer", "text": "It is a token on a programmable blockchain that represents Bitcoin held or controlled elsewhere. It exists so BTC-denominated value can interact with smart contracts, wallets, exchanges, lending markets, and liquidity pools."}}, {"@type": "Question", "name": "Is it the same as native BTC?", "acceptedAnswer": {"@type": "Answer", "text": "No. BTC is native to Bitcoin; the wrapped token is separate and carries different operational and counterparty risks. Its price is intended to track BTC, but its custody and settlement model are not Bitcoin’s."}}, {"@type": "Question", "name": "How do I convert it back to BTC?", "acceptedAnswer": {"@type": "Answer", "text": "Retail users usually sell or swap out, while formal redemption runs through authorized merchants that burn the token. For direct Ethereum redemption, BTC release waits for 25 Ethereum confirmations, and provider processing can add time."}}, {"@type": "Question", "name": "Is it really 1:1 backed?", "acceptedAnswer": {"@type": "Answer", "text": "WBTC targets a 1:1 backing ratio, with reserves under institutional custody involving BitGo and BiT Global. The strong check is not the slogan; it is whether reserve coverage, issuance, and mint or burn records remain publicly consistent."}}, {"@type": "Question", "name": "What does using it cost?", "acceptedAnswer": {"@type": "Answer", "text": "Expect network gas in the native asset of the chain you use, plus any Bitcoin network fee when BTC itself moves. On a DEX, the pool fee sits inside the route and price impact or spread can change the final amount."}}, {"@type": "Question", "name": "Is the contract safe to interact with?", "acceptedAnswer": {"@type": "Answer", "text": "Verify the exact contract or mint address for the chain before anything else; identical symbols do not prove authenticity. Even verified deployments retain smart-contract, approval, routing, cross-chain, custodian, and phishing risk."}}]}]}
-  </script>
-<link href="dashboard/index.html" rel="prefetch"/><link href="dashboard/index.html" rel="prerender"/></head>
+:root{--bg:#120D09;--surface:#1E1711;--text:#F4EDE3;--muted:#A89878;--accent:#FBAE3C;--accent-ink:#1C1402;--radius:11px;--display:"Lexend";--body:"Inter"}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:2rem}
+body{margin:0;background:var(--bg);color:var(--text);font:400 1rem/1.65 var(--body);-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:var(--accent-ink)}
+a{color:inherit;text-underline-offset:.25em}
+a:hover{color:var(--accent)}
+button,input,select,textarea{font:inherit}
+input,select{color:var(--text);accent-color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:5px}
+img,svg{max-width:100%;vertical-align:middle}
+svg{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.c0bc33a{width:min(1200px,calc(100% - 4rem));margin-inline:auto}
+.c2c49ec{min-height:92px;display:flex;align-items:center;justify-content:space-between;gap:2rem;border-bottom:1px solid color-mix(in srgb,var(--text) 12%,transparent)}
+.cec5d77{display:inline-flex;align-items:center;gap:.7rem;text-decoration:none;font:650 1.3rem/1.2 var(--display);letter-spacing:-.04em}
+.c82dac0{display:grid;place-items:center;width:36px;height:36px;background:var(--accent);color:var(--accent-ink);border-radius:calc(var(--radius)*.5)}
+.c82dac0 svg{width:23px;height:23px}
+.c38ee01{display:flex;align-items:center;gap:1.8rem;font-size:.875rem;font-weight:550}
+.c38ee01 a{text-decoration:none}
+.c38ee01 .c4c842d{padding:.6rem 1rem;border:1px solid color-mix(in srgb,var(--text) 18%,transparent);border-radius:var(--radius)}
+.cfc6a55{padding-block:1.5rem;font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
+.ca14f2a{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;margin:0;padding:0;list-style:none}
+.ca14f2a a{text-decoration:none}
+.ca14f2a [aria-current="page"]{color:var(--text)}
+.c62ab65{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:center;gap:clamp(2rem,6vw,6rem);padding-block:2.5rem 5.5rem}
+.cfc63a1{min-width:0}
+.cbb8ce2{display:inline-flex;align-items:center;gap:.55rem;margin:0 0 1.25rem;color:var(--muted);font-size:.875rem}
+.cbb8ce2::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 12%,transparent)}
+h1{margin:0;font:550 clamp(2.65rem,5vw,4.75rem)/1.06 var(--display);letter-spacing:-.055em;overflow-wrap:anywhere;text-wrap:balance}
+h1 em{color:var(--accent);font-style:normal}
+.caf9632{max-width:36rem;margin:1.6rem 0 2rem;color:var(--muted);font-size:1.1rem;line-height:1.8}
+.c7ee039{display:inline-flex;justify-content:center;align-items:center;gap:1.4rem;min-height:54px;padding:.9rem 1.4rem;background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 86%,var(--text)));color:var(--accent-ink);border:1px solid color-mix(in srgb,var(--accent-ink) 12%,transparent);border-radius:var(--radius);font-weight:650;text-decoration:none;box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 20%,transparent);transition:transform .2s,box-shadow .2s}
+.c7ee039 svg{width:20px;height:20px;flex:none}
+.c7ee039:hover{color:var(--accent-ink);transform:translateY(-2px);box-shadow:0 12px 26px color-mix(in srgb,var(--accent) 28%,transparent)}
+.cb781ff{display:flex;align-items:center;gap:.5rem;margin:1.2rem 0 0;color:var(--muted);font-size:.8rem}
+.cb781ff svg{width:16px;height:16px;color:var(--accent)}
+.c39b8bf{position:relative;min-width:0;padding:12px;border:1px solid color-mix(in srgb,var(--accent) 18%,transparent);border-radius:calc(var(--radius) + 12px);background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 13%,var(--bg)),color-mix(in srgb,var(--surface) 70%,var(--bg)));box-shadow:0 28px 64px -28px color-mix(in srgb,var(--text) 24%,transparent)}
+.c2a57e6{padding:clamp(1.25rem,3vw,2rem);background:var(--surface);border:1px solid color-mix(in srgb,var(--text) 9%,transparent);border-radius:var(--radius)}
+.c8e8c39{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.7rem}
+.c8e8c39 h2{margin:0;font:600 1.2rem/1.3 var(--display);letter-spacing:-.025em}
+.ca01ab3{display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);font-size:.72rem;white-space:nowrap}
+.ca01ab3::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.c7893d1{display:grid;grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr);align-items:center;gap:.7rem;margin-bottom:1.7rem}
+.cfac1c5{min-width:0;padding:.9rem 1rem;background:color-mix(in srgb,var(--bg) 70%,var(--surface));border:1px solid color-mix(in srgb,var(--text) 9%,transparent);border-radius:calc(var(--radius)*.7)}
+.c2e3249{display:block;margin-bottom:.65rem;color:var(--muted);font-size:.75rem}
+.cb14478{display:flex;align-items:center;gap:.5rem;min-height:32px;font:600 .95rem/1.3 var(--display);overflow-wrap:anywhere}
+.cb14478 img,.cb14478 svg{width:auto;height:32px;max-width:100%;object-fit:contain}
+.cbeb31e{display:grid;place-items:center;width:36px;height:36px;border:1px solid color-mix(in srgb,var(--accent) 24%,transparent);border-radius:50%;color:var(--accent)}
+.cbeb31e svg{width:18px;height:18px}
+.cf60981{display:block;margin-bottom:.55rem;font-size:.8rem;font-weight:550}
+.cfb8c9b{display:flex;align-items:center;gap:.5rem;padding:.7rem 1rem;border:1px solid color-mix(in srgb,var(--text) 19%,transparent);border-radius:calc(var(--radius)*.7);background:var(--bg);transition:border-color .2s}
+.cfb8c9b:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 13%,transparent)}
+.cfb8c9b input{width:100%;min-width:0;padding:0;border:0;border-radius:0;background:var(--bg);font:550 1.9rem/1.5 var(--display);font-variant-numeric:tabular-nums}
+.cfb8c9b input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cfb8c9b span{color:var(--muted);font-size:.8rem}
+.cee359b{margin:.5rem 0 1.2rem;color:var(--muted);font-size:.73rem}
+.c064248{margin:-.65rem 0 1rem;color:var(--text);font-size:.8rem}
+.caf2371{padding:1.2rem;border:1px solid color-mix(in srgb,var(--accent) 18%,transparent);border-radius:calc(var(--radius)*.7);background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 8%,var(--surface)),var(--surface))}
+.cedaa70{display:block;color:var(--muted);font-size:.8rem}
+.c18a1db{display:block;margin:.35rem 0 1.2rem;font:600 clamp(1.65rem,3vw,2.25rem)/1.25 var(--display);letter-spacing:-.035em;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.c18a1db small{color:var(--muted);font:400 .8rem/1.5 var(--body);letter-spacing:0}
+.c88824a{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding-top:1rem;border-top:1px solid color-mix(in srgb,var(--text) 10%,transparent)}
+.cd91c3b{display:block;color:var(--muted);font-size:.72rem}
+.c090f33{display:block;margin-top:.2rem;font-size:.9rem;font-weight:600;font-variant-numeric:tabular-nums}
+.c2a57e6 .c7ee039{width:100%;margin-top:1.3rem;justify-content:space-between}
+.c93b119{margin-top:1rem;color:var(--muted);font-size:.73rem}
+.c93b119 summary{cursor:pointer;width:fit-content;text-underline-offset:.2em}
+.c93b119 summary:hover{color:var(--text)}
+.c93b119 p{margin:.7rem 0 0}
+.c7f3ae8{margin:0;font:550 1.75rem/1.2 var(--display);letter-spacing:-.035em}
+.ca80cbc{padding:2rem 2.25rem;background:var(--surface);border:1px solid color-mix(in srgb,var(--text) 10%,transparent);border-radius:var(--radius)}
+.ca80cbc .c7f3ae8{margin-bottom:1.5rem}
+.c9d919a{max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain}
+.c87e984{width:100%;border-collapse:collapse;text-align:left;font-size:.9rem}
+.c87e984 caption{text-align:left;margin-bottom:1rem;color:var(--muted)}
+.c87e984 th,.c87e984 td{padding:1rem 1.1rem;border-bottom:1px solid color-mix(in srgb,var(--text) 10%,transparent);vertical-align:top;overflow-wrap:anywhere}
+.c87e984 th{color:var(--muted);font-weight:500}
+.c87e984 thead{background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
+.c87e984 thead th{color:var(--text);font-weight:600}
+.c87e984 tbody tr:last-child>*{border-bottom:0}
+.c87e984 tbody tr:hover{background:color-mix(in srgb,var(--accent) 4%,var(--surface))}
+.c4bd3cc{max-width:820px;margin:4.5rem auto}
+.c70e335{margin:0 0 3.5rem;scroll-margin-top:2rem}
+.cb2b98c{margin:0 0 1.25rem;font:550 clamp(1.65rem,3vw,2.25rem)/1.2 var(--display);letter-spacing:-.035em;text-wrap:balance}
+.c45e5fc{color:var(--muted);font-size:1.025rem;line-height:1.9;overflow-wrap:anywhere}
+.c45e5fc p{margin:0 0 1.25rem}
+.c45e5fc h3{margin:1.75rem 0 .75rem;color:var(--text);font:600 1.25rem/1.35 var(--display);letter-spacing:-.02em}
+.c45e5fc strong{color:var(--text);font-weight:600}
+.c45e5fc a,.cfff26a a,.cba2cd4 a{color:var(--accent);text-decoration-thickness:1px}
+.c45e5fc ul,.c45e5fc ol,.cfff26a ul,.cfff26a ol{padding-left:1.4rem}
+.c45e5fc li+li{margin-top:.55rem}
+.c45e5fc li::marker{color:var(--accent)}
+.c45e5fc blockquote{margin:1.5rem 0;padding:1rem 1.5rem;border-left:3px solid var(--accent);background:var(--surface);border-radius:0 var(--radius) var(--radius) 0;color:var(--text)}
+.c45e5fc img{height:auto;border-radius:var(--radius)}
+.c45e5fc table{width:100%;border-collapse:collapse}
+.c45e5fc td,.c45e5fc th{padding:.75rem;border-bottom:1px solid color-mix(in srgb,var(--text) 12%,transparent);text-align:left}
+.cece771{margin:.8rem 0;padding:0 1.4rem;border:1px solid color-mix(in srgb,var(--text) 12%,transparent);border-radius:var(--radius);background:var(--surface)}
+.c9ca77b{display:flex;justify-content:space-between;align-items:center;gap:1.5rem;min-height:72px;padding:1.2rem 0;cursor:pointer;list-style:none;font:550 1.05rem/1.5 var(--display)}
+.c9ca77b::-webkit-details-marker{display:none}
+.c9ca77b::after{content:"+";flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:color-mix(in srgb,var(--accent) 10%,var(--surface));color:var(--accent);font:400 1.25rem/1 var(--body)}
+.cece771[open]{border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+.cece771[open]>.c9ca77b::after{content:"в€’"}
+.cfff26a{padding:0 2.8rem 1.3rem 0;color:var(--muted);line-height:1.85;overflow-wrap:anywhere}
+.cfff26a p{margin:.25rem 0 .75rem}
+.c814727{display:grid;grid-template-columns:1fr 2fr;gap:2rem;padding:2.5rem 0;border-top:1px solid color-mix(in srgb,var(--text) 12%,transparent)}
+.caa2c9f{margin:0;padding:0;list-style:none}
+.cba2cd4{padding:.7rem 0;border-bottom:1px solid color-mix(in srgb,var(--text) 8%,transparent);color:var(--muted);font-size:.875rem;overflow-wrap:anywhere}
+.cba2cd4:first-child{padding-top:0}
+.cba2cd4:last-child{border-bottom:0}
+.c6342db{display:flex;justify-content:space-between;align-items:center;gap:1.5rem;padding-block:1.75rem 2.5rem;border-top:1px solid color-mix(in srgb,var(--text) 12%,transparent);color:var(--muted);font-size:.8rem}
+.c90aa5b{color:var(--text);font:600 1rem/1.3 var(--display);letter-spacing:-.025em}
+.cada7fd{margin:0}
+@media(min-width:1100px){.c39b8bf{transform:rotate(1deg)}.c2a57e6{transform:rotate(-1deg)}}
+@media(max-width:850px){.c62ab65{grid-template-columns:1fr;gap:2.5rem;padding-block:1.5rem 3.5rem}.cfc63a1{max-width:650px}.c39b8bf{width:100%;max-width:580px;justify-self:center}.c4bd3cc{margin-block:3.5rem}.c38ee01{gap:1rem}h1{max-width:14ch}}
+@media(max-width:540px){.c0bc33a{width:calc(100% - 2rem)}.c2c49ec{min-height:76px;gap:1rem}.c38ee01>a:not(.c4c842d){display:none}.c38ee01 .c4c842d{padding:.5rem .8rem}.cfc6a55{padding-block:1.1rem}.c62ab65{padding-top:1rem}.cfc63a1>.c7ee039{width:100%;justify-content:space-between}.caf9632{font-size:1rem}.c39b8bf{padding:7px;border-radius:calc(var(--radius) + 7px)}.c2a57e6{padding:1.1rem}.c7893d1{gap:.4rem;grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr)}.cbeb31e{width:30px;height:30px}.cfac1c5{padding:.8rem}.ca80cbc{padding:1.4rem 1rem}.c87e984 th,.c87e984 td{padding:.85rem .65rem}.cece771{padding-inline:1rem}.cfff26a{padding-right:0}.c814727{grid-template-columns:1fr;gap:1.4rem}.c6342db{align-items:flex-start;flex-direction:column;gap:.65rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}.c7ee039:hover{transform:none}}
+</style>
+</head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
-<div class="shell">
-<main class="main" id="main">
-<header class="topbar">
-<div class="topbar-left">
-<h1 class="wordmark">Wrap BTC</h1>
-</div>
-<div class="topbar-right">
-<div aria-label="Live metrics" class="ticker">
-<a aria-label="BTC" class="tick" href="https://www.coingecko.com/en/coins/bitcoin" rel="noopener noreferrer" target="_blank"><span>BTC</span> <b id="sig-bitcoin">…</b> <span aria-hidden="true" class="ext">↗</span></a>
-<a aria-label="USDT" class="tick" href="https://coinmarketcap.com/currencies/tether/" rel="noopener noreferrer" target="_blank"><span>USDT</span> <b id="sig-tether">…</b> <span aria-hidden="true" class="ext">↗</span></a>
-</div>
-</div>
-</header>
-<section class="hero2">
-<div class="hero2-l">
-<h2 class="hero2-h">Bitcoin liquidity on smart chains</h2>
-<p class="hero2-lead"><strong>Wrap BTC</strong> puts Bitcoin value to work on programmable chains through wrapped tokens you can acquire, hold, swap, and redeem.</p>
-<div class="hero2-cta">
-<a class="btn2 btn2-primary" href="dashboard/" rel="noopener noreferrer" target="_blank">Open the Wrap BTC app <span aria-hidden="true" class="go">↗</span></a>
-<a class="btn2 btn2-ghost" href="#what">How it works</a>
-</div>
-</div>
-<div class="hero2-r">
-<section aria-labelledby="preview-title" class="swap-card" id="swap-preview">
-<div class="card-head">
-<p class="card-title" id="preview-title">Preview</p>
-<span class="preview-tag"><span aria-hidden="true"></span>Preview only</span>
-</div>
-<div class="leg">
-<span class="asset" id="asset-from"><span class="tok"><img alt="BTC token" decoding="async" height="24" loading="lazy" src="btc.png" width="24"/></span><b>BTC</b><svg aria-hidden="true" class="chev-sm" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></span>
-<span class="leg-amt"><span class="amount">0.00</span><span class="leg-sub">Preview</span></span>
-</div>
-<button aria-label="Swap preview direction" class="swap-arrow" id="route-swap" title="Swap preview direction" type="button">
-<svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M8 4v13M8 4L4 8M8 4l4 4M16 20V7M16 20l-4-4M16 20l4-4"></path></svg>
-</button>
-<div class="leg">
-<span class="asset" id="asset-to"><span class="tok"><img alt="WBTC token" decoding="async" height="24" loading="lazy" src="wbtc.png" width="24"/></span><b>WBTC</b><svg aria-hidden="true" class="chev-sm" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></span>
-<span class="leg-amt"><span class="amount">0.00</span><span class="leg-sub">Preview</span></span>
-</div>
-<div class="route-panel">
-<div class="route-info"><b id="route-name">BTC → WBTC</b><span>Preview route</span></div>
-<div class="route-tok"><span class="tok sm"><img alt="WBTC token" decoding="async" height="18" loading="lazy" src="wbtc.png" width="18"/></span> WBTC</div>
-</div>
-<div class="route-row"><span>Pair</span><b>BTC / USDT</b></div>
-<div class="route-row"><span>Network cost</span><b>Gas</b></div>
-<a class="swap-cta" href="dashboard/" rel="noopener noreferrer" target="_blank"><svg aria-hidden="true" class="cta-ico" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"></path></svg>Go to Swap<span aria-hidden="true" class="cta-go">→</span></a>
-</section>
-</div>
-<a aria-label="Scroll to learn more" class="scrollcue2" href="#what"><span>Scroll</span><svg fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24"><path d="M12 5v14M12 19l-6-6M12 19l6-6"></path></svg></a>
-</section>
-<div class="content">
-<div class="lead-in reveal">
-<div class="feat">
-<div class="feat-l">
-<h2>On-Chain Wrapped Bitcoin (WBTC) Routing Overview</h2>
-<p class="feat-lead">Wrapped BTC is a token on a programmable chain that represents Bitcoin held or controlled elsewhere, built so BTC-denominated value can use wallets, smart contracts, exchanges, lending markets, and liquidity pools.</p>
-<div class="feat-cta"><a class="feat-btn" href="dashboard/" rel="noopener noreferrer" target="_blank">Open the App <span aria-hidden="true" class="arr">→</span></a></div>
-<details class="feat-more">
-<summary class="feat-readmore">Read more <svg aria-hidden="true" class="chev" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></summary>
-<div class="feat-detail">
-<p>Most people do not mint it; they buy or swap into an existing token such as <a href="https://docs.wbtc.network/">WBTC</a>, then later swap out or redeem through the issuer route. This page is an independent, non-custodial dashboard: it explains mechanics and verification, and never asks for keys, BTC, WBTC, or seed phrases.</p>
-<div class="feat-facts">
-<div class="feat-fact"><span class="fl">Token</span><span class="fv">A wrapped representation of BTC on another chain</span></div>
-<div class="feat-fact"><span class="fl">Backing / peg</span><span class="fv">Designed to target 1:1 BTC backing</span></div>
-<div class="feat-fact"><span class="fl">Convert</span><span class="fv">Buy/swap in; merchant mint and burn handle issuance</span></div>
-<div class="feat-fact"><span class="fl">Networks</span><span class="fv">Ethereum, Solana, TRON, BNB Chain, Base, Kava, Osmosis</span></div>
-<div class="feat-fact"><span class="fl">Costs</span><span class="fv">Native gas; DEX adds pool fee and price impact</span></div>
-<div class="feat-fact"><span class="fl">Verify</span><span class="fv">Check the contract address, not the ticker</span></div>
-</div>
-</div>
-</details>
-</div>
-<div class="feat-r"><span class="feat-badge"><img alt="Wrap BTC" height="72" src="wbtc.png" width="72"/></span></div>
-</div>
-</div>
-<div class="docs">
-<nav aria-label="On this page" class="toc">
-<p class="toc-h">On this page</p>
-<a href="#what">What is Wrapped Bitcoin (WBTC)?</a>
-<a href="#wrap">Getting in and out</a>
-<a href="#swap">Swapping it on a DEX</a>
-<a href="#vs">The token vs its native asset</a>
-<a href="#fees">Costs and gas</a>
-<a href="#safety">Is Wrap BTC safe?</a>
-<a href="#troubleshoot">Problems and fixes</a>
-<a href="#faq">BTC FAQ</a>
-<a href="#notes">Notes before you wrap btc</a>
+<div class="c0bc33a">
+<nav class="c2c49ec" aria-label="Main navigation">
+<a class="cec5d77" href="#hero"><span class="c82dac0" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8h15m-4-4 4 4-4 4M20 16H5m4-4-4 4 4 4"/></svg></span>Compare</a>
+<div class="c38ee01"><a href="#facts">Key facts</a><a href="#guide">Guide</a><a href="#sources">Sources</a><a class="c4c842d" href="dashboard/">Open app в†—</a></div>
 </nav>
-<div class="doc-main">
-<details class="sec reveal doc-sec" id="what" open="">
-<summary><h2>What is Wrapped Bitcoin (WBTC)?</h2></summary>
-<div class="sec-body">Wrapped BTC is Bitcoin value expressed as a token on a programmable blockchain, not native BTC moved wholesale onto that chain. WBTC is the best-known implementation and <a href="https://wbtc.network/assets/wrapped-tokens-whitepaper.pdf" rel="noopener noreferrer" target="_blank">the WBTC whitepaper</a> describes a 1:1 backing ratio: one token is intended to correspond to one BTC held in the custody structure. That representation lets lending markets, liquidity pools, exchanges, wallets, and smart contracts price and move BTC-like value without waiting for Bitcoin base-layer settlement. It uses a different custody, contract, and governance surface than holding BTC itself.</div>
-</details>
-<details class="sec reveal doc-sec" id="wrap" open="">
-<summary><h2>Getting in and out</h2></summary>
-<div class="sec-body">Getting in and out normally means acquiring an existing wrapped balance through an exchange or swap; users do not usually mint directly. New issuance is gated: an approved merchant completes KYC/AML, sends BTC to the custodian wallet, waits for six Bitcoin confirmations, then the custodian verifies and mints matching tokens through the merchant; the <a href="https://developer.bitcoin.org/devguide/payment_processing.html" rel="noopener noreferrer" target="_blank">Bitcoin developer guide</a> explains the six-confirmation convention. Going back reverses the flow: a merchant burns the token and, after the required destination-chain confirmations, the custodian releases BTC. Direct Ethereum redemption requires 25 Ethereum confirmations before BTC release, and provider processing can add time. Ordinary holders can transfer the token without becoming merchants, but the backing BTC remains under institutional custody.</div>
-</details>
-<details class="sec reveal doc-sec" id="swap" open="">
-<summary><h2>Swapping it on a DEX</h2></summary>
-<div class="sec-body">Swapping wrapped BTC on a DEX means routing the token through a liquidity pool and granting the router an ERC-20 allowance for the input token. The pool fee is embedded in the execution price; price impact rises when your order is large relative to available liquidity; and the difference between the quoted and executed amount is <a href="https://en.wikipedia.org/wiki/Slippage_%28finance%29" rel="noopener noreferrer" target="_blank">slippage</a>. The quote's minimum received is the number that matters if the market moves before confirmation. An unlimited approval is convenient, but it extends spend permission beyond the single trade. The <a href="https://eips.ethereum.org/EIPS/eip-20" rel="noopener noreferrer" target="_blank">ERC-20 token standard</a> defines the transfer and approval interface used by compatible contracts.</div>
-</details>
-<details class="sec reveal doc-sec" id="vs" open="">
-<summary><h2>The token vs its native asset</h2></summary>
-<div class="sec-body">BTC is the native asset of Bitcoin and settles under Bitcoin's consensus and custody model; wrapped BTC is a separate token whose value depends on reserves, contracts, governance, the selected chain, and sometimes a bridge. Native BTC fits base-layer settlement and fewer counterparties. The wrapped token fits posting collateral, providing liquidity, routing through DeFi, or holding BTC-denominated exposure inside a smart-contract wallet. When a bridge is part of the path, bridge risk is additive because messages and assets must move across chains.</div>
-</details>
-<details class="sec reveal doc-sec" id="fees" open="">
-<summary><h2>Costs and gas</h2></summary>
-<div class="sec-body">Wrapped BTC costs are a stack: moving BTC on Bitcoin pays a Bitcoin network fee; moving or approving the wrapped token pays gas in the native asset of the chain you are using, such as ETH on Ethereum; and a DEX swap includes the pool fee inside the route plus price impact and any spread shown by the venue. <a href="https://ethereum.org/developers/docs/gas/" rel="noopener noreferrer" target="_blank">Ethereum's gas overview</a> defines gas as the execution resource priced for network work, so the displayed rate can differ from the final executed amount. Redemption through an issuer or provider can add processing time and its own commercial terms. Keep a small native gas balance before you need it; failed approvals and reverted transactions still consume gas.</div>
-</details>
-<details class="sec reveal doc-sec" id="safety" open="">
-<summary><h2>Is Wrap BTC safe?</h2></summary>
-<div class="sec-body">Safety depends on matching the deployment, custody path, and transaction details. An identical symbol on another chain proves nothing. On Ethereum, WBTC is an ERC-20 token on chain ID 1 with eight decimals at <code>0x2260fac5e5542a773aa44fbcfedf7c193bc2c599</code>; the <a href="https://etherscan.io/token/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599" rel="noopener noreferrer" target="_blank">Ethereum contract listing</a> should show that exact address before importing or trading. Official native deployments also exist on Solana, TRON, BNB Chain, Base, Kava, and Osmosis, each with its own contract or mint address. Import a token only after the contract or mint address matches, never from a ticker search alone. Reserves involve institutional custody through BitGo and BiT Global, and reserve addresses, circulating issuance, and mint or burn records are publicly inspectable. Audited or open-source code reduces some failure modes but never removes smart-contract, approval, routing, cross-chain, governance, custodian, or phishing risk.</div>
-</details>
-<details class="sec reveal doc-sec" id="troubleshoot" open="">
-<summary><h2>Problems and fixes</h2></summary>
-<div class="sec-body">Problems usually resolve by separating network, token, gas, approval, and settlement state. If a wallet shows a balance on one chain while the app is connected to another, switch networks; if the token does not appear, import it only after its contract or mint address matches. No gas means even a correct transaction cannot broadcast, so the chain's native asset must be available. For an approval issue, read the spender, amount, and nonce in the wallet. If value seems stuck, identify whether the action is a DEX swap (market routing), redemption (issuer burn and release), or a pending confirmation threshold: six Bitcoin blocks and 25 Ethereum blocks are not the same as a lost transaction.</div>
-</details>
-<details class="sec reveal doc-sec" id="faq" open="">
-<summary><h2>BTC FAQ</h2></summary>
-<div class="sec-body">
-<details class="qa"><summary>What is wrapped BTC?</summary><div class="a"><p>Wrapped BTC is Bitcoin value expressed as a token on a programmable blockchain, not native BTC moved wholesale onto that chain. It lets BTC-denominated value interact with smart contracts, wallets, exchanges, lending markets, and liquidity pools.</p></div></details>
-<details class="qa"><summary>Is it the same as native BTC?</summary><div class="a"><p>No. BTC is native to Bitcoin; the wrapped token is separate. Its price is intended to track BTC, but its custody and settlement model are not Bitcoin's.</p></div></details>
-<details class="qa"><summary>How do I convert it back to BTC?</summary><div class="a"><p>Retail users usually sell or swap out, while formal redemption runs through authorized merchants that burn the token. Direct Ethereum redemption requires 25 Ethereum confirmations before BTC release, and provider processing can add time.</p></div></details>
-<details class="qa"><summary>Is it really 1:1 backed?</summary><div class="a"><p>WBTC targets a 1:1 backing ratio, with reserves under institutional custody involving BitGo and BiT Global. Reserve addresses, circulating issuance, and mint or burn records are publicly inspectable.</p></div></details>
-<details class="qa"><summary>What does using it cost?</summary><div class="a"><p>Moving BTC on Bitcoin pays a Bitcoin network fee; moving or approving the wrapped token pays gas in the native asset of the chain you use. A DEX adds the pool fee inside the route, while price impact or spread can change the final amount.</p></div></details>
-<details class="qa"><summary>Is the contract safe to interact with?</summary><div class="a"><p>The identity is chain-specific: Ethereum WBTC is an ERC-20 token on chain ID 1 with eight decimals at <code>0x2260fac5e5542a773aa44fbcfedf7c193bc2c599</code>, while other deployments have their own contract or mint addresses.</p></div></details>
+<div class="cfc6a55"><nav class="ca14f2a" aria-label="Breadcrumb"><a href="dashboard/">Home</a> <span>/</span> <span>Wrapping</span> <span>/</span> <span>Wrap BTC</span></nav></div>
+<section class="c62ab65" id="hero" aria-labelledby="hero-title">
+<div class="cfc63a1">
+<p class="cbb8ce2">Wrap & unwrap</p>
+<h1 id="hero-title">Wrap <em>BTC</em>.</h1>
+<p class="caf9632">To Wrap BTC is to lock native Bitcoin with a custodian or a decentralized vault and receive a matching token on Ethereum or another EVM chain, so Bitcoin's value can move through smart contracts that the Bitcoin network itself cannot run. Bitcoin has no general-purpose virtual machine, so it cannot be lent, pooled or swapped inside Ethereum's DeFi contracts in its native form — a wrapped token stands in for it, backed one-to-one by real BTC held in reserve. You pick a custodian or protocol, send BTC to its deposit address, and a token like WBTC or tBTC appears in your wallet at the same value, ready to unwrap back to native Bitcoin whenever you choose.</p>
+<a class="c7ee039" href="dashboard/">Open app <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+<p class="cb781ff"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Explore fees and timing below</p>
 </div>
-</details>
-<section class="field-notes reveal doc-sec" id="notes">
-<h2>Notes before you wrap btc</h2>
-<div class="fn-body"><strong>Practitioner note:</strong> treat wrapped Bitcoin as useful credit against BTC, not as BTC itself. <strong>Before you sign</strong><ul><li>Match the contract or mint address and custodian model, not the symbol.</li><li>Keep native gas for the chain you are actually on.</li><li>On a DEX route, read minimum received and price impact before confirming.</li></ul><strong>Verification:</strong> reserve addresses, issuance, and mint or burn records are public, but public data is not a guarantee; last reviewed 21 July 2026.</div>
+<aside class="c39b8bf" aria-labelledby="estimator-title">
+<div class="c2a57e6">
+<div class="c8e8c39"><h2 id="estimator-title">Wrap estimator</h2><span class="ca01ab3">Auto-updating</span></div>
+<div class="c7893d1">
+<div class="cfac1c5"><span class="c2e3249">From</span><div class="cb14478"><img src="assets/tokens/btc.svg" alt="Bitcoin" width="28" height="28"></div></div>
+<span class="cbeb31e" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></span>
+<div class="cfac1c5"><span class="c2e3249">To</span><div class="cb14478"></div></div>
+</div>
+<label class="cf60981" for="amount">Amount</label>
+<div class="cfb8c9b"><input id="amount" type="number" inputmode="decimal" min="1" max="1000000000" step="0.01" value="1000" aria-describedby="amount-hint amount-error"><span>units</span></div>
+<p class="cee359b" id="amount-hint">Enter 1вЂ“1,000,000,000 units, up to 2 decimal places.</p>
+<p class="c064248" id="amount-error" hidden></p>
+<div class="caf2371" role="status" aria-live="polite" aria-atomic="true">
+<span class="cedaa70">Estimated amount received</span>
+<output class="c18a1db" id="received" for="amount">вЂ”</output>
+<div class="c88824a">
+<div><span class="cd91c3b">Estimated fee</span><output class="c090f33" id="fee" for="amount">вЂ”</output></div>
+<div><span class="cd91c3b">Estimated time</span><output class="c090f33" id="time" for="amount">вЂ”</output></div>
+</div>
+</div>
+<a class="c7ee039" href="dashboard/">Continue <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+<details class="c93b119"><summary>How the estimate is calculated</summary><p>Fee = 0.5 units + 0.35% of the amount, rounded to 2 decimals. Amount received = amount в€’ fee. Time = 2 minutes + 1 minute per 10,000 units, rounded up.</p></details>
+<noscript><p class="cee359b">Enable JavaScript to calculate fees and timing.</p></noscript>
+</div>
+</aside>
 </section>
-</div>
-</div>
-</div>
-<footer class="site-foot"><div class="wrap">Wrap BTC Guide &amp; Technical Reference · <a href="dashboard/" rel="noopener noreferrer" target="_blank">Open Wrap BTC App ↗</a> · © 2026</div></footer>
-</main>
+<section class="ca80cbc" id="facts" aria-labelledby="facts-title"><h2 class="c7f3ae8" id="facts-title">Key facts</h2><div class="c9d919a" role="region" aria-label="Key facts table" tabindex="0"><table class="c87e984"><tbody><tr><th scope="row">Underlying asset</th><td>Native Bitcoin (BTC)</td></tr>
+<tr><th scope="row">Wrapped standard</th><td>ERC-20 token on Ethereum (and bridged to other EVM chains)</td></tr>
+<tr><th scope="row">Backing ratio</th><td>1:1 — one wrapped token per BTC held in reserve</td></tr>
+<tr><th scope="row">Custodial model</th><td>WBTC — merchant requests mint, custodian holds the BTC</td></tr>
+<tr><th scope="row">Decentralized model</th><td>tBTC — distributed signers replace a single custodian</td></tr>
+<tr><th scope="row">Redemption</th><td>Burn the wrapped token to release the underlying BTC</td></tr></tbody></table></div></section>
+<main class="c4bd3cc" id="guide"><section class="c70e335"><h2 class="cb2b98c">What It Means to Wrap BTC</h2><div class="c45e5fc"><strong>To Wrap BTC means depositing native Bitcoin so it is held in reserve while a mirror token of equal value is minted on a smart-contract network such as Ethereum.</strong> The wrapped token is not a new asset with its own price; it is a claim on the BTC sitting behind it, and its price tracks Bitcoin because anyone holding enough of the token can redeem it for the real thing. This separation — Bitcoin stays where it is, a receipt moves instead — is a pattern <a href="https://en.wikipedia.org/wiki/Wrapped_bitcoin" rel="nofollow noopener" target="_blank">documented on Wikipedia</a> and is what lets Bitcoin's value participate in markets it was never built to run on.<h3>A receipt, not a copy</h3>The wrapped token is best understood as a <strong>claim</strong> rather than a duplicate of Bitcoin. Minting one does not create new Bitcoin supply; it moves existing BTC into a reserve and issues a tradeable receipt against it. Burning the receipt reverses the process and the underlying coin becomes spendable on the Bitcoin network again, visible on any <a href="https://mempool.space/" rel="nofollow noopener" target="_blank">Bitcoin block explorer</a>.<h3>Where the token can travel</h3>Once minted, a wrapped BTC token behaves like any other ERC-20 asset. It can sit in a wallet, trade on an exchange, or be deposited into a lending market or liquidity pool, and its balance and transfers are visible on <a href="https://etherscan.io/" rel="nofollow noopener" target="_blank">Etherscan</a> the same way any other token's activity is.</div></section>
+<section class="c70e335"><h2 class="cb2b98c">Why Wrap BTC for Ethereum</h2><div class="c45e5fc">Bitcoin's scripting language is deliberately limited; it was designed for secure, simple value transfer, not for the general computation that smart contracts need. Ethereum and other EVM chains run the lending, trading and yield contracts that make up most of DeFi, so an asset has to exist there natively to use them. You wrap BTC precisely to cross that gap — the coin itself never leaves the Bitcoin chain, but a token standing in for it becomes usable everywhere Ethereum contracts run. Holding Bitcoin exposure and earning on-chain yield used to be mutually exclusive choices; wrapping is the piece that removed that trade-off by giving Bitcoin a form a smart contract can actually hold, approve and move.<h3>DeFi needs a programmable form</h3>Supplying Bitcoin as collateral on a lending protocol, pairing it in a liquidity pool, or routing it through a decentralized exchange all require an asset that smart contracts can read and move. A wrapped token satisfies that requirement while keeping its value pegged to BTC, documented across trackers like <a href="https://defillama.com/" rel="nofollow noopener" target="_blank">DefiLlama</a>.<h3>Liquidity follows where the token lives</h3>Most on-chain trading volume and the deepest DeFi liquidity sit on Ethereum and a handful of other EVM chains, not on the Bitcoin network itself. Wrapping gives Bitcoin holders access to that liquidity without selling their BTC exposure.<h3>No native yield on Bitcoin itself</h3>The Bitcoin network has no lending markets, no liquidity pools and no staking contracts built into its protocol, so BTC sitting in a cold wallet produces nothing on its own. Once you Wrap BTC, the resulting token can be supplied to a money market or paired in a pool, turning otherwise idle Bitcoin into collateral that earns while the underlying coin stays fully redeemable.</div></section>
+<section class="c70e335"><h2 class="cb2b98c">The Custodial Model Behind Wrap BTC</h2><div class="c45e5fc">The original and still most-used way to Wrap BTC is the custodial model used by WBTC: a merchant takes your deposit request, a custodian holds the actual Bitcoin in cold storage, and the custodian instructs the smart contract to mint the matching token to your address. Redeeming runs the same path backward — you send the token to be burned, and the custodian releases the equivalent BTC. The system's trust rests on the custodian actually holding what it claims.<h3>Mint and burn, not swap</h3>Minting and burning are the two operations that keep the peg honest: new tokens appear only when new BTC enters the reserve, and tokens disappear only when BTC leaves it. There is no pool swapping one for the other behind the scenes — the <a href="https://wbtc.network/" rel="nofollow noopener" target="_blank">WBTC network</a> publishes the mint-and-burn transactions that back every token in circulation.<h3>Proof of reserves</h3>Because the peg depends on the custodian's holdings matching the token supply, reserve attestations and on-chain reserve addresses let anyone check that the BTC backing is real rather than assumed. Comparing the circulating supply against the published reserve address is the simplest independent check available to any holder.</div></section>
+<section class="c70e335"><h2 class="cb2b98c">How to Wrap BTC, Step by Step</h2><div class="c45e5fc">The mechanics are consistent across custodial and decentralized routes, even though who holds the BTC differs. Here is the flow most providers follow.<ul><li>Choose a provider — a custodial service like WBTC or a decentralized protocol like tBTC — and connect a wallet that can receive an EVM token.</li><li>Generate or confirm the dedicated Bitcoin deposit address the provider assigns to your request.</li><li>Send BTC from your own wallet to that deposit address and wait for Bitcoin network confirmations.</li><li>Once confirmations clear, the matching wrapped token is minted to your EVM address at a 1:1 rate.</li><li>Use the token in DeFi, or later burn it through the same provider to redeem native BTC back to a Bitcoin address.</li></ul></div></section>
+<section class="c70e335"><h2 class="cb2b98c">Wrap BTC Options Compared</h2><div class="c45e5fc">Not every way to Wrap BTC carries the same trust assumptions. The table below lines up the main routes against who holds custody, how trust is enforced, and what to check before relying on the peg.<table><thead><tr><th>Route</th><th>Custody model</th><th>What backs the peg</th></tr></thead><tbody><tr><td>WBTC</td><td>Single custodian holds BTC</td><td>Reserve attestations and on-chain proof-of-reserve address</td></tr><tr><td>tBTC</td><td>Distributed signer network</td><td>Threshold cryptography across independent operators, no single custodian</td></tr><tr><td>Exchange-wrapped BTC</td><td>Exchange's own balance sheet</td><td>Exchange solvency and its own reserve reporting</td></tr></tbody></table></div></section>
+<section class="c70e335"><h2 class="cb2b98c">Decentralized Ways to Wrap BTC</h2><div class="c45e5fc">A custodian is a single point of trust: if it fails or acts dishonestly, the peg can break. Decentralized alternatives such as tBTC spread custody across a distributed network of signers who collectively hold the keys to the deposited BTC, using threshold cryptography so no single party can move the reserve alone. The trade-off is usually a slower or more complex minting process in exchange for not depending on one institution's honesty and solvency.<h3>Threshold signing instead of one key</h3>Rather than one custodian's private key controlling the BTC reserve, a threshold scheme splits control across many independent operators, requiring a quorum of them to agree before funds move. Losing or compromising a single operator does not expose the reserve.<h3>Permissionless minting</h3>Decentralized wrapping protocols typically let anyone deposit and mint without approval from a merchant, closer to how the rest of DeFi is meant to work, though liquidity and integrations across exchanges and lending markets are still generally deeper for the established custodial token.<h3>Choosing between the two models</h3>Neither approach is strictly better in every case. A custodial token like WBTC tends to offer the deepest liquidity and the widest acceptance across lending markets and exchanges, which matters if you plan to move large amounts quickly. A distributed-signer wrap like tBTC trades some of that liquidity for not resting on a single institution's solvency, which matters more if you plan to hold the wrapped position for a long time. Many holders split a position across both rather than treating the choice as all-or-nothing.</div></section>
+<section class="c70e335"><h2 class="cb2b98c">Checking a Wrap and Unwinding It Safely</h2><div class="c45e5fc">Before trusting any wrapped token, verify the basics yourself rather than taking a provider's marketing at face value: confirm the token contract address against the provider's own documentation, check that circulating supply lines up with published reserves, and understand the exact redemption path before you need it. Unwrapping follows the same pattern everywhere — submit the token to be burned, specify a Bitcoin payout address, and wait for the provider to release native BTC once the burn is confirmed. Keep a record of which route you used, since a WBTC token and a tBTC token are not interchangeable even though both track Bitcoin's price, and either side of a transfer can still be traced on <a href="https://mempool.space/" rel="nofollow noopener" target="_blank">mempool.space</a> or Etherscan.<h3>Fees and timing to expect</h3>Expect to pay Bitcoin network fees on the deposit side and Ethereum gas for the mint transaction, with the wrapped token usually landing within an hour once confirmations clear. Redemption runs on a similar clock: the burn transaction confirms quickly on the EVM side, then the Bitcoin payout follows once the provider's own confirmation threshold is met.<h3>Reading the contract before you trust it</h3>A wrapped token's safety rests on the contract and the reserve behind it, not on its ticker symbol alone. Matching the contract address on Etherscan against the provider's published address, and checking that the holder count and transfer history look like genuine activity rather than a copy, takes a few minutes and rules out an entire category of mistake before any BTC moves.</div></section><details class="cece771"><summary class="c9ca77b">What does it actually mean to Wrap BTC?</summary><div class="cfff26a">It means depositing native Bitcoin so it is held in reserve while a matching token is minted on Ethereum or another EVM chain. The token is a claim on that BTC, not a separate asset, and burning it releases the original coin.</div></details>
+<details class="cece771"><summary class="c9ca77b">Why can't I just use Bitcoin directly in DeFi?</summary><div class="cfff26a">Bitcoin's scripting language does not support the general computation smart contracts need, so lending markets, liquidity pools and decentralized exchanges on Ethereum cannot read or move native BTC. A wrapped token gives Bitcoin a form those contracts can interact with.</div></details>
+<details class="cece771"><summary class="c9ca77b">How is WBTC different from a decentralized wrap like tBTC?</summary><div class="cfff26a">WBTC uses a single custodian that holds the BTC reserve and publishes attestations proving it. tBTC spreads custody across a distributed network of signers using threshold cryptography, so no single party controls the deposited Bitcoin.</div></details>
+<details class="cece771"><summary class="c9ca77b">Is a wrapped token always backed one-to-one?</summary><div class="cfff26a">That is the design goal of every major wrap, and it is what keeps the token's price tracking Bitcoin's. You can check the backing yourself by comparing circulating token supply against the provider's published reserve address.</div></details>
+<details class="cece771"><summary class="c9ca77b">Can I unwrap back to native Bitcoin whenever I want?</summary><div class="cfff26a">Yes, that is the point of the mint-and-burn design. You submit the wrapped token to be burned, provide a Bitcoin payout address, and the provider releases the equivalent BTC once the burn is confirmed.</div></details>
+<details class="cece771"><summary class="c9ca77b">Does wrapping change Bitcoin's total supply?</summary><div class="cfff26a">No. Wrapping moves existing BTC into a reserve and issues a receipt against it; it does not create new Bitcoin. Unwrapping simply returns that same BTC to circulation on its own network.</div></details>
+<details class="cece771"><summary class="c9ca77b">Which wrapped BTC has the most liquidity for DeFi?</summary><div class="cfff26a">WBTC remains the most widely integrated across lending markets, exchanges and liquidity pools, which is visible in trackers like DefiLlama, though decentralized alternatives are growing as more protocols add support for them.</div></details></main>
+<section class="c814727" id="sources" aria-labelledby="sources-title"><h2 class="c7f3ae8" id="sources-title">Sources</h2><div><ul class="caa2c9f"><li><a class="cba2cd4" href="https://wbtc.network/" rel="nofollow noopener" target="_blank">WBTC network</a></li>
+<li><a class="cba2cd4" href="https://en.wikipedia.org/wiki/Wrapped_bitcoin" rel="nofollow noopener" target="_blank">Wrapped bitcoin — Wikipedia</a></li>
+<li><a class="cba2cd4" href="https://mempool.space/" rel="nofollow noopener" target="_blank">mempool.space Bitcoin explorer</a></li>
+<li><a class="cba2cd4" href="https://defillama.com/" rel="nofollow noopener" target="_blank">DefiLlama</a></li></ul></div></section>
+<footer class="c6342db"><span class="c90aa5b">Compare with clarity.</span><p class="cada7fd">Updated Oct 09, 2026</p></footer>
 </div>
 <script>
-/* Wrap BTC: route preview, mobile nav, scroll-reveal. */
-(function () {
-  "use strict";
-  document.documentElement.classList.add("js");
-  var $ = function (id) { return document.getElementById(id); };
-  function money(n) {
-    if (n >= 1e9) return "$" + (n / 1e9).toFixed(2) + "B";
-    if (n >= 1e6) return "$" + (n / 1e6).toFixed(2) + "M";
-    if (n >= 1e3) return "$" + (n / 1e3).toFixed(0) + "K";
-    return "$" + n.toFixed(0);
-  }
-  function grab(url) {
-    var controller = "AbortController" in window ? new AbortController() : null;
-    var timer = controller ? setTimeout(function () { controller.abort(); }, 6500) : null;
-    return fetch(url, controller ? { signal: controller.signal } : undefined)
-      .then(function (response) { if (!response.ok) throw new Error("HTTP " + response.status); return response.json(); })
-      .finally(function () { if (timer) clearTimeout(timer); });
-  }
-  var SIGNALS = [{"t": "price", "id": "sig-bitcoin", "cg": "bitcoin", "label": "BTC", "link": "https://www.coingecko.com/en/coins/bitcoin", "chg": true}, {"t": "price", "id": "sig-tether", "cg": "tether", "label": "USDT", "link": "https://www.coingecko.com/en/coins/tether"}];
-  (function(){
-    var S = SIGNALS; if(!S||!S.length) return;
-    function el(id){return document.getElementById(id);}
-    function hide(id){var e=el(id);if(e){var t=e.closest(".tick");if(t)t.style.display="none";}}
-    function set(id,x){var e=el(id);if(e)e.textContent=x;}
-    function usd(n){n=Number(n);return "$"+n.toLocaleString("en-US",{maximumFractionDigits:n<1?4:0});}
-    function big(n){n=Number(n);if(n>=1e9)return "$"+(n/1e9).toFixed(2)+"B";if(n>=1e6)return "$"+(n/1e6).toFixed(1)+"M";if(n>=1e3)return "$"+(n/1e3).toFixed(1)+"K";return "$"+Math.round(n);}
-    function jf(u){return fetch(u).then(function(r){if(!r.ok)throw 0;return r.json();});}
-    var coins = S.filter(function(s){return s.t==="price"||s.t==="mcap";});
-    if(coins.length){
-      var ids=coins.map(function(s){return s.cg;}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(",");
-      jf("https://api.coingecko.com/api/v3/simple/price?ids="+ids+"&vs_currencies=usd&include_24hr_change=true&include_market_cap=true")
-        .then(function(v){coins.forEach(function(s){var d=v[s.cg];if(!d){hide(s.id);return;}
-          if(s.t==="mcap"){isFinite(d.usd_market_cap)&&d.usd_market_cap>0?set(s.id,big(d.usd_market_cap)):hide(s.id);return;}
-          if(isFinite(d.usd)){var x=usd(d.usd);if(s.chg&&isFinite(d.usd_24h_change)){var c=d.usd_24h_change;x+=" "+(c>=0?"▲":"▼")+Math.abs(c).toFixed(1)+"%";}set(s.id,x);}else hide(s.id);});})
-        .catch(function(){coins.forEach(function(s){hide(s.id);});});
+(() => {
+  const amount = document.getElementById('amount');
+  const received = document.getElementById('received');
+  const fee = document.getElementById('fee');
+  const time = document.getElementById('time');
+  const error = document.getElementById('amount-error');
+  const number = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  let timer;
+  function update() {
+    const value = amount.valueAsNumber;
+    const valid = amount.value.trim() !== '' && Number.isFinite(value) && amount.validity.valid;
+    amount.setAttribute('aria-invalid', String(!valid));
+    error.hidden = valid;
+    error.textContent = valid ? '' : 'Enter an amount from 1 to 1,000,000,000 with up to 2 decimal places.';
+    if (!valid) {
+      received.textContent = 'вЂ”';
+      fee.textContent = 'вЂ”';
+      time.textContent = 'вЂ”';
+      return;
     }
-    S.forEach(function(s){
-      if(s.t==="tvl") jf("https://api.llama.fi/tvl/"+s.sl).then(function(v){var n=Number(v);isFinite(n)&&n>0?set(s.id,big(n)):hide(s.id);}).catch(function(){hide(s.id);});
-      else if(s.t==="vol") jf("https://api.llama.fi/summary/dexs/"+s.sl+"?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true").then(function(v){var n=v&&Number(v.total24h);isFinite(n)&&n>0?set(s.id,big(n)):hide(s.id);}).catch(function(){hide(s.id);});
-      else if(s.t==="ctvl") jf("https://api.llama.fi/v2/chains").then(function(a){var f=(a||[]).filter(function(c){return c.name===s.ch;})[0];f&&isFinite(f.tvl)&&f.tvl>0?set(s.id,big(f.tvl)):hide(s.id);}).catch(function(){hide(s.id);});
-    });
-  })();
-/* metrics handled above */
-
-  var swap = $("route-swap");
-  if (swap) swap.addEventListener("click", function () {
-    var from = $("asset-from"), to = $("asset-to"), hold = from.innerHTML;
-    from.innerHTML = to.innerHTML;
-    to.innerHTML = hold;
-  });
-
-  /* AMM / TWAMM route switch (preview label only). */
-  var modeToggle = $("mode-toggle");
-  if (modeToggle) modeToggle.addEventListener("click", function () {
-    var twamm = modeToggle.getAttribute("aria-checked") !== "true";
-    modeToggle.setAttribute("aria-checked", String(twamm));
-    var amm = $("ms-amm"), tw = $("ms-twamm"), name = $("route-name");
-    if (amm) amm.classList.toggle("is-on", !twamm);
-    if (tw) tw.classList.toggle("is-on", twamm);
-    if (name) name.textContent = twamm ? "USDT → BTC" : "BTC → USDT";
-  });
-
-  /* Collapsed left menu: off-canvas drawer opened from the topbar, closed by scrim / Esc / link / close button. */
-  var shell = document.querySelector(".shell");
-  var sidebar = document.querySelector(".sidebar");
-  var sideNav = $("sideNav");
-  var scrim = document.querySelector("[data-scrim]");
-  var openBtn = document.querySelector("[data-nav-open]");
-  var closeBtn = document.querySelector(".nav-toggle");
-  function setNav(open) {
-    if (sidebar) sidebar.classList.toggle("is-open", open);
-    if (scrim) scrim.classList.toggle("is-open", open);
-    if (shell) shell.classList.toggle("nav-open", open);
-    if (openBtn) openBtn.setAttribute("aria-expanded", String(open));
-    if (closeBtn) closeBtn.setAttribute("aria-expanded", String(open));
+    const amountCents = Math.round(value * 100);
+    const feeCents = 50 + Math.round(amountCents * 35 / 10000);
+    received.textContent = number.format((amountCents - feeCents) / 100) + ' units';
+    fee.textContent = number.format(feeCents / 100) + ' units';
+    time.textContent = (2 + Math.ceil(value / 10000)).toLocaleString('en-US') + ' min';
   }
-  if (openBtn) openBtn.addEventListener("click", function () { setNav(!(sidebar && sidebar.classList.contains("is-open"))); });
-  if (closeBtn) closeBtn.addEventListener("click", function () { setNav(false); });
-  if (scrim) scrim.addEventListener("click", function () { setNav(false); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") setNav(false); });
-  if (sideNav) sideNav.addEventListener("click", function (e) { if (e.target.closest("a")) setNav(false); });
-
-  /* Scroll-reveal: content is always in the HTML; this only animates it into view. */
-  var reveals = document.querySelectorAll(".reveal");
-  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reveals.length && "IntersectionObserver" in window && !reduce) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
-    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
-    reveals.forEach(function (el) { io.observe(el); });
-  } else {
-    reveals.forEach(function (el) { el.classList.add("in"); });
-  }
-
-  /* Open (and reveal) the targeted section accordion when its fragment is used. */
-  function openHashTarget() {
-    var id = location.hash.slice(1);
-    if (!id) return;
-    var el = document.getElementById(id);
-    if (el && el.tagName === "DETAILS") { el.open = true; el.classList.add("in"); }
-  }
-  window.addEventListener("hashchange", openHashTarget);
-  openHashTarget();
-  document.addEventListener("click", function (e) {
-    var a = e.target.closest('a[href^="#"]');
-    if (!a) return;
-    var el = document.getElementById(a.getAttribute("href").slice(1));
-    if (el && el.tagName === "DETAILS") { el.open = true; el.classList.add("in"); }
+  amount.addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(update, 180);
   });
-
-  })();
-  (function(){
-    var links=[].slice.call(document.querySelectorAll(".toc a"));
-    if(!links.length)return;
-    var secs=[].slice.call(document.querySelectorAll(".doc-main [id]")).filter(function(s){return document.querySelector('.toc a[href="#'+s.id+'"]');});
-    if(!secs.length)return;
-    function setActive(id){links.forEach(function(a){a.classList.toggle("active",a.getAttribute("href")==="#"+id);});}
-    function update(){var cur=secs[0];for(var i=0;i<secs.length;i++){if(secs[i].getBoundingClientRect().top-120<=0)cur=secs[i];else break;}if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4)cur=secs[secs.length-1];if(cur)setActive(cur.id);}
-    window.addEventListener("scroll",update,{passive:true});
-    window.addEventListener("resize",update);
+  amount.addEventListener('change', () => {
+    clearTimeout(timer);
     update();
-  })();
-  </script>
+  });
+  update();
+})();
+</script>
 </body>
 </html>
